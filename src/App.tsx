@@ -2,6 +2,7 @@ import { useState } from 'react'
 import Schedule from './tabs/Schedule'
 import Groups from './tabs/Groups'
 import Bracket from './tabs/Bracket'
+import Locations from './tabs/Locations'
 import './App.css'
 
 type TabId =
@@ -59,6 +60,8 @@ export default function App() {
           <Groups />
         ) : active === 'bracket' ? (
           <Bracket />
+        ) : active === 'locations' ? (
+          <Locations />
         ) : (
           <>
             <h2 className="panel-title">{current.label}</h2>
