@@ -1,12 +1,16 @@
-import { useState } from 'react'
-import Schedule from './tabs/Schedule'
-import Groups from './tabs/Groups'
-import Bracket from './tabs/Bracket'
-import Locations from './tabs/Locations'
-import TeamInfo from './tabs/TeamInfo'
-import MyTeams from './tabs/MyTeams'
-import Favorites from './tabs/Favorites'
+import { lazy, Suspense, useState, type ComponentType } from 'react'
 import './App.css'
+
+// Tabs are lazy-loaded so each is split into its own chunk. This keeps the heavy
+// Leaflet map (Locations) out of the initial bundle — it only downloads when the
+// user actually opens that tab.
+const Schedule = lazy(() => import('./tabs/Schedule'))
+const Groups = lazy(() => import('./tabs/Groups'))
+const Bracket = lazy(() => import('./tabs/Bracket'))
+const Locations = lazy(() => import('./tabs/Locations'))
+const TeamInfo = lazy(() => import('./tabs/TeamInfo'))
+const MyTeams = lazy(() => import('./tabs/MyTeams'))
+const Favorites = lazy(() => import('./tabs/Favorites'))
 
 type TabId =
   | 'schedule'
@@ -17,24 +21,21 @@ type TabId =
   | 'myteams'
   | 'favorites'
 
-type Tab = {
-  id: TabId
-  label: string
-  blurb: string
-}
+type Tab = { id: TabId; label: string; Component: ComponentType }
 
 const TABS: Tab[] = [
-  { id: 'schedule', label: 'Schedule', blurb: 'Match fixtures, kickoff times, and live scores will live here.' },
-  { id: 'groups', label: 'Groups', blurb: 'Group standings and tables for the group stage.' },
-  { id: 'bracket', label: 'Bracket', blurb: 'The knockout-stage bracket from Round of 32 to the Final.' },
-  { id: 'locations', label: 'Locations', blurb: 'Host cities, stadiums, and a map of venues.' },
-  { id: 'teams', label: 'Team Info', blurb: 'Squads, rosters, and quick facts for each nation.' },
-  { id: 'myteams', label: 'My Teams', blurb: 'The teams you follow, surfaced in one place.' },
-  { id: 'favorites', label: 'Favorites', blurb: 'Your saved matches, players, and moments.' },
+  { id: 'schedule', label: 'Schedule', Component: Schedule },
+  { id: 'groups', label: 'Groups', Component: Groups },
+  { id: 'bracket', label: 'Bracket', Component: Bracket },
+  { id: 'locations', label: 'Locations', Component: Locations },
+  { id: 'teams', label: 'Team Info', Component: TeamInfo },
+  { id: 'myteams', label: 'My Teams', Component: MyTeams },
+  { id: 'favorites', label: 'Favorites', Component: Favorites },
 ]
 
 export default function App() {
   const [active, setActive] = useState<TabId>('schedule')
+  const ActivePanel = TABS.find((t) => t.id === active)!.Component
 
   return (
     <div className="app">
@@ -56,21 +57,9 @@ export default function App() {
       </nav>
 
       <main className="tab-panel">
-        {active === 'schedule' ? (
-          <Schedule />
-        ) : active === 'groups' ? (
-          <Groups />
-        ) : active === 'bracket' ? (
-          <Bracket />
-        ) : active === 'locations' ? (
-          <Locations />
-        ) : active === 'teams' ? (
-          <TeamInfo />
-        ) : active === 'myteams' ? (
-          <MyTeams />
-        ) : (
-          <Favorites />
-        )}
+        <Suspense fallback={<div className="empty">Loading…</div>}>
+          <ActivePanel />
+        </Suspense>
       </main>
     </div>
   )
