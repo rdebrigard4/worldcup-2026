@@ -114,13 +114,15 @@ export function teamColors(team: string): string[] {
   return TEAM_COLORS[team] ?? ['#4ade80']
 }
 
-/** Vertical flag-stripe gradient from a palette — used for team headers. */
-export function stripesGradient(colors: string[]): string {
+/** Hard-edged flag-stripe gradient from a palette. Vertical by default;
+ *  pass 90 for a horizontal flag bar. Used for team headers and the
+ *  team-theme accent bar. */
+export function stripesGradient(colors: string[], angleDeg = 180): string {
   if (!colors.length) return ''
   if (colors.length === 1) return colors[0]
   const step = 100 / colors.length
   const stops = colors.map((c, i) => `${c} ${i * step}%, ${c} ${(i + 1) * step}%`)
-  return `linear-gradient(180deg, ${stops.join(', ')})`
+  return `linear-gradient(${angleDeg}deg, ${stops.join(', ')})`
 }
 
 /** "Stadium · City" or "Stadium" → "Stadium". */

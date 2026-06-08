@@ -6,6 +6,13 @@
   flex-direction: column;
 }
 
+/* Team-theme flag bar — only rendered when a team accent is active. Sits
+   flush at the very top so the chosen team's colors are unmistakable. */
+.team-stripe {
+  height: 6px;
+  background: var(--team-stripe, var(--accent));
+}
+
 /* Header */
 .app-header {
   display: flex;

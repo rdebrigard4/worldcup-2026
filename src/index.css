@@ -47,6 +47,15 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+/* When a team theme is active (flag set by App.tsx), wash the page with a
+   soft accent glow from the top so the team color reads beyond the chips. */
+:root[data-themed] body {
+  background:
+    radial-gradient(135% 70% at 50% -10%, rgba(var(--accent-rgb), 0.18), transparent 55%),
+    var(--bg);
+  background-attachment: fixed;
+}
+
 button {
   font-family: inherit;
   cursor: pointer;

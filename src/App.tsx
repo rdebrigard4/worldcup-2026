@@ -4,6 +4,8 @@ import { useSettings, FONT_SCALE_MIN, FONT_SCALE_MAX } from './lib/storage'
 import {
   TEAMS_WITH_COLORS,
   teamPrimaryColor,
+  teamColors,
+  stripesGradient,
   hexToRgb,
   onAccentColor,
 } from './data/venues'
@@ -48,7 +50,8 @@ export default function App() {
 
   // Push the appearance settings onto <html>: data-theme drives the light/dark
   // palette, the root font-size scales every rem in the app, and (when a team
-  // is chosen) the accent variables are overridden inline.
+  // is chosen) the accent variables + flag-stripe gradient are overridden
+  // inline and the data-themed flag turns on the page tint.
   useEffect(() => {
     const root = document.documentElement
     root.dataset.theme = settings.theme
@@ -58,15 +61,22 @@ export default function App() {
       root.style.setProperty('--accent', hex)
       root.style.setProperty('--accent-rgb', hexToRgb(hex))
       root.style.setProperty('--on-accent', onAccentColor(hex))
+      root.style.setProperty('--team-stripe', stripesGradient(teamColors(settings.themeTeam), 90))
+      root.setAttribute('data-themed', '')
     } else {
       root.style.removeProperty('--accent')
       root.style.removeProperty('--accent-rgb')
       root.style.removeProperty('--on-accent')
+      root.style.removeProperty('--team-stripe')
+      root.removeAttribute('data-themed')
     }
   }, [settings.theme, settings.fontScale, settings.themeTeam])
 
   return (
     <div className="app">
+      {settings.themeTeam && (
+        <div className="team-stripe" aria-hidden="true" title={`${settings.themeTeam} theme`} />
+      )}
       <header className="app-header">
         <h1 className="app-title">World Cup 2026</h1>
         <button
