@@ -8,6 +8,7 @@ import { DEFAULT_FAV_TEAMS } from '../data/schedule'
 
 const SAVED_KEY = 'wc2026_saved'
 const FAVS_KEY = 'wc2026_favTeams'
+const NOTES_KEY = 'wc2026_notes'
 
 function read<T>(key: string, fallback: T): T {
   try {
@@ -41,6 +42,7 @@ function createStore<T>(key: string, initial: T) {
 
 const savedStore = createStore<Record<string, true>>(SAVED_KEY, {})
 const favStore = createStore<string[]>(FAVS_KEY, DEFAULT_FAV_TEAMS)
+const notesStore = createStore<Record<string, string>>(NOTES_KEY, {})
 
 /** Saved (starred) match ids — shared by Schedule, Bracket, and Favorites. */
 export function useSavedMatches() {
@@ -66,4 +68,17 @@ export function useFavTeams() {
     favStore.set(cur.includes(team) ? cur.filter((t) => t !== team) : [...cur, team])
   }
   return { teams, favIn, isFav, toggleTeam }
+}
+
+/** Per-match notes (keyed by match id) — used by the Favorites tab. */
+export function useMatchNotes() {
+  const notes = useSyncExternalStore(notesStore.subscribe, notesStore.get)
+  const noteFor = (id: string) => notes[id] ?? ''
+  const setNote = (id: string, text: string) => {
+    const next = { ...notesStore.get() }
+    if (text.trim()) next[id] = text
+    else delete next[id]
+    notesStore.set(next)
+  }
+  return { notes, noteFor, setNote }
 }

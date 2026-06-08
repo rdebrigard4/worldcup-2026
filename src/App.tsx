@@ -5,6 +5,7 @@ import Bracket from './tabs/Bracket'
 import Locations from './tabs/Locations'
 import TeamInfo from './tabs/TeamInfo'
 import MyTeams from './tabs/MyTeams'
+import Favorites from './tabs/Favorites'
 import './App.css'
 
 type TabId =
@@ -34,7 +35,6 @@ const TABS: Tab[] = [
 
 export default function App() {
   const [active, setActive] = useState<TabId>('schedule')
-  const current = TABS.find((t) => t.id === active)!
 
   return (
     <div className="app">
@@ -69,14 +69,7 @@ export default function App() {
         ) : active === 'myteams' ? (
           <MyTeams />
         ) : (
-          <>
-            <h2 className="panel-title">{current.label}</h2>
-            <p className="panel-blurb">{current.blurb}</p>
-            <div className="placeholder-card">
-              <span className="placeholder-badge">Coming soon</span>
-              <p>This is a placeholder. Content for “{current.label}” gets built next.</p>
-            </div>
-          </>
+          <Favorites />
         )}
       </main>
     </div>
