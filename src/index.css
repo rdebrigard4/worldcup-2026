@@ -1,9 +1,16 @@
 :root {
-  /* Dark theme palette (default) */
-  --bg: #0b1220;
-  --surface: #131c2e;
-  --surface-2: #1b2740;
-  --border: #263351;
+  /* Dark theme palette (default). The *-base values are the untinted
+     surfaces; --bg/--surface/etc derive from them so a team theme can
+     remix them with the accent (see :root[data-themed] below). */
+  --bg-base: #0b1220;
+  --surface-base: #131c2e;
+  --surface-2-base: #1b2740;
+  --border-base: #263351;
+
+  --bg: var(--bg-base);
+  --surface: var(--surface-base);
+  --surface-2: var(--surface-2-base);
+  --border: var(--border-base);
   --text: #e2e8f0;
   --text-muted: #94a3b8;
   --accent: #22c55e;
@@ -20,14 +27,25 @@
 
 /* Light theme — applied via data-theme on <html> (set by App.tsx). */
 :root[data-theme='light'] {
-  --bg: #f1f5f9;
-  --surface: #ffffff;
-  --surface-2: #eef2f7;
-  --border: #d3dceb;
+  --bg-base: #f1f5f9;
+  --surface-base: #ffffff;
+  --surface-2-base: #eef2f7;
+  --border-base: #d3dceb;
   --text: #0f172a;
   --text-muted: #5b6b85;
 
   color-scheme: light;
+}
+
+/* Team theme — bleed the accent into every surface and border so the whole
+   app wears the team's color, not just the chips. Placed after the light
+   block so it wins for both palettes; uses the theme-appropriate *-base
+   values, so it reads right in dark and light. */
+:root[data-themed] {
+  --bg: color-mix(in srgb, var(--accent) 6%, var(--bg-base));
+  --surface: color-mix(in srgb, var(--accent) 9%, var(--surface-base));
+  --surface-2: color-mix(in srgb, var(--accent) 13%, var(--surface-2-base));
+  --border: color-mix(in srgb, var(--accent) 32%, var(--border-base));
 }
 
 * {
@@ -51,7 +69,7 @@ body {
    soft accent glow from the top so the team color reads beyond the chips. */
 :root[data-themed] body {
   background:
-    radial-gradient(135% 70% at 50% -10%, rgba(var(--accent-rgb), 0.18), transparent 55%),
+    radial-gradient(135% 75% at 50% -10%, rgba(var(--accent-rgb), 0.32), transparent 60%),
     var(--bg);
   background-attachment: fixed;
 }
