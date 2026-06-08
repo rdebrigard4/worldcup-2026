@@ -1,0 +1,235 @@
+.teaminfo {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* Picker reuses .loc-chip / .loc-swatch (Locations.css); .ti-picker mirrors
+   .loc-picker but is its own selector so the two tabs can diverge later. */
+.ti-picker {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.ti-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+/* Header with flag-stripe accent */
+.ti-header {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 0.85rem 1rem;
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+  background: var(--surface);
+  overflow: hidden;
+}
+
+.ti-stripes {
+  flex-shrink: 0;
+  width: 8px;
+  align-self: stretch;
+  border-radius: 999px;
+  min-height: 2.75rem;
+}
+
+.ti-header-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.ti-team-name {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.ti-flag {
+  font-size: 1.5rem;
+  line-height: 1;
+}
+
+.ti-meta {
+  margin-top: 0.2rem;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+/* Follow toggle — the .fav-pill base gives the green look; make it tappable
+   and dim it when not following. */
+.fav-pill {
+  flex-shrink: 0;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.fav-pill:not(.fav-pill--on) {
+  background: transparent;
+  color: var(--text-muted);
+  border-color: var(--border);
+}
+
+/* Sections */
+.ti-section-h {
+  margin: 0 0 0.6rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+}
+
+.ti-loading {
+  padding: 0.9rem 1rem;
+  border: 1px solid var(--border);
+  border-radius: 0.6rem;
+  background: var(--surface);
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+/* Quick Facts */
+.ti-facts {
+  display: grid;
+  grid-template-columns: 1fr;
+  border: 1px solid var(--border);
+  border-radius: 0.6rem;
+  overflow: hidden;
+  background: var(--surface);
+}
+
+.ti-fact {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.55rem 0.85rem;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.85rem;
+}
+
+.ti-fact:last-child {
+  border-bottom: none;
+}
+
+.ti-fact-label {
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+.ti-fact-val {
+  color: var(--text);
+  text-align: right;
+  font-weight: 600;
+}
+
+/* Match list */
+.ti-matches {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.ti-match {
+  display: flex;
+  gap: 0.85rem;
+  align-items: center;
+  padding: 0.6rem 0.85rem;
+  border: 1px solid var(--border);
+  border-radius: 0.6rem;
+  background: var(--surface);
+}
+
+.ti-match-date {
+  flex-shrink: 0;
+  width: 4.5rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.ti-match-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.ti-match-teams {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.ti-match-venue {
+  margin-top: 0.15rem;
+  font-size: 0.74rem;
+  color: var(--text-muted);
+}
+
+/* Wikipedia "About" card */
+.ti-wiki {
+  display: flex;
+  gap: 0.9rem;
+  align-items: flex-start;
+  padding: 0.9rem;
+  border: 1px solid var(--border);
+  border-radius: 0.6rem;
+  background: var(--surface);
+}
+
+.ti-wiki img {
+  width: 110px;
+  height: 110px;
+  object-fit: cover;
+  border-radius: 0.5rem;
+  flex-shrink: 0;
+  border: 1px solid var(--border);
+}
+
+.ti-wiki-body {
+  flex: 1;
+  min-width: 0;
+  font-size: 0.86rem;
+  line-height: 1.55;
+  color: var(--text);
+}
+
+.ti-wiki-body p {
+  margin: 0;
+}
+
+.ti-wiki-desc {
+  margin-bottom: 0.5rem;
+  font-size: 0.75rem;
+  font-style: italic;
+  color: var(--text-muted);
+}
+
+.ti-wiki-link {
+  display: inline-block;
+  margin-top: 0.5rem;
+  font-size: 0.8rem;
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.ti-wiki-link:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 480px) {
+  .ti-wiki {
+    flex-direction: column;
+  }
+
+  .ti-wiki img {
+    width: 100%;
+    height: 180px;
+  }
+}

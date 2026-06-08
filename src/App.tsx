@@ -3,6 +3,7 @@ import Schedule from './tabs/Schedule'
 import Groups from './tabs/Groups'
 import Bracket from './tabs/Bracket'
 import Locations from './tabs/Locations'
+import TeamInfo from './tabs/TeamInfo'
 import './App.css'
 
 type TabId =
@@ -62,6 +63,8 @@ export default function App() {
           <Bracket />
         ) : active === 'locations' ? (
           <Locations />
+        ) : active === 'teams' ? (
+          <TeamInfo />
         ) : (
           <>
             <h2 className="panel-title">{current.label}</h2>

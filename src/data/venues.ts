@@ -90,6 +90,20 @@ export function teamPrimaryColor(team: string): string {
   return colors ? pickPrimary(colors) : '#4ade80'
 }
 
+/** A team's full flag palette (or a green fallback for unknown teams). */
+export function teamColors(team: string): string[] {
+  return TEAM_COLORS[team] ?? ['#4ade80']
+}
+
+/** Vertical flag-stripe gradient from a palette — used for team headers. */
+export function stripesGradient(colors: string[]): string {
+  if (!colors.length) return ''
+  if (colors.length === 1) return colors[0]
+  const step = 100 / colors.length
+  const stops = colors.map((c, i) => `${c} ${i * step}%, ${c} ${(i + 1) * step}%`)
+  return `linear-gradient(180deg, ${stops.join(', ')})`
+}
+
 /** "Stadium · City" or "Stadium" → "Stadium". */
 export function stadiumKey(v: string): string {
   return (v || '').split(' · ')[0]
