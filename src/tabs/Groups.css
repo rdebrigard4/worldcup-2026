@@ -1,0 +1,158 @@
+.groups {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.85rem;
+}
+
+@media (min-width: 560px) {
+  .groups {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.grp-card {
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--surface);
+  padding: 0.9rem 1rem;
+}
+
+.grp-card--fav {
+  border-color: rgba(34, 197, 94, 0.5);
+}
+
+.grp-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 0.6rem;
+}
+
+.grp-label {
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+.grp-label--hot {
+  color: #f87171;
+}
+
+.grp-dates {
+  font-size: 0.74rem;
+  color: var(--text-muted);
+}
+
+/* Team rows */
+.grp-teams {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  margin-bottom: 0.75rem;
+}
+
+.grp-team-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.3rem 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.grp-team-row:last-child {
+  border-bottom: none;
+}
+
+.grp-team {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.88rem;
+  min-width: 0;
+}
+
+.grp-team--fav {
+  font-weight: 700;
+}
+
+.grp-star {
+  font-size: 0.8rem;
+}
+
+.grp-tag {
+  flex: 0 0 auto;
+  font-size: 0.66rem;
+  font-weight: 600;
+}
+
+.grp-tag--w {
+  color: var(--accent);
+}
+
+.grp-tag--ru {
+  color: #60a5fa;
+}
+
+/* Knockout path */
+.grp-path {
+  border-top: 1px dashed var(--border);
+  padding-top: 0.6rem;
+}
+
+.grp-path-label {
+  font-size: 0.66rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  margin-bottom: 0.4rem;
+}
+
+.grp-path-row {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.76rem;
+  padding: 0.12rem 0;
+  color: var(--text-muted);
+}
+
+.grp-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex: 0 0 auto;
+}
+
+.grp-dot--w {
+  background: var(--accent);
+}
+
+.grp-dot--ru {
+  background: #60a5fa;
+}
+
+.grp-path-slot {
+  font-weight: 600;
+}
+
+.grp-path-slot--w {
+  color: var(--accent);
+}
+
+.grp-path-slot--ru {
+  color: #60a5fa;
+}
+
+.grp-arrow {
+  color: var(--text-muted);
+}
+
+.grp-path-dest {
+  min-width: 0;
+}
+
+.grp-path-dest strong {
+  color: var(--text);
+  font-weight: 600;
+}

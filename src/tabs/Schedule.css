@@ -1,0 +1,120 @@
+.schedule {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* Filter / sort chips — wraps to multiple rows */
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Filter chips use the shared .chip / .chip--on styles (see index.css) */
+
+.search-wrap {
+  flex: 1 1 180px;
+  min-width: 160px;
+}
+
+.search-wrap input {
+  width: 100%;
+  padding: 0.45rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--text);
+  font-size: 0.85rem;
+}
+
+.search-wrap input::placeholder {
+  color: var(--text-muted);
+}
+
+.search-wrap input:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+/* Match list */
+.match-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.group-hdr {
+  margin: 1.1rem 0 0.5rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+}
+
+.group-hdr:first-child {
+  margin-top: 0;
+}
+
+.match {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  width: 100%;
+  text-align: left;
+  padding: 0.7rem 0.85rem;
+  margin-bottom: 0.4rem;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface);
+  color: var(--text);
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.match:hover {
+  border-color: var(--accent);
+}
+
+.match--saved {
+  border-color: var(--accent);
+  background: var(--surface-2);
+}
+
+.m-date {
+  flex: 0 0 auto;
+  width: 3.2rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  line-height: 1.2;
+  color: var(--text-muted);
+}
+
+.m-body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.m-teams {
+  font-size: 0.92rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.m-meta {
+  font-size: 0.76rem;
+  color: var(--text-muted);
+}
+
+.m-star {
+  flex: 0 0 auto;
+  font-size: 1.15rem;
+  line-height: 1;
+  color: var(--accent);
+}

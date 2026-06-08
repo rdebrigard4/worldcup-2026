@@ -1,0 +1,83 @@
+.app {
+  max-width: 900px;
+  margin: 0 auto;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Header */
+.app-header {
+  padding: 1rem 1rem 0.75rem;
+}
+
+.app-title {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+/* Tab bar — horizontally scrollable so all 7 tabs work on a phone */
+.tab-bar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  overflow-x: auto;
+  overflow-y: hidden;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none; /* Firefox */
+}
+
+.tab-bar::-webkit-scrollbar {
+  display: none; /* Chrome/Safari */
+}
+
+/* Tab buttons use the shared .chip / .chip--on styles (see index.css) */
+
+/* Panel */
+.tab-panel {
+  flex: 1;
+  padding: 1.25rem 1rem 2rem;
+}
+
+.panel-title {
+  margin: 0 0 0.25rem;
+  font-size: 1.25rem;
+}
+
+.panel-blurb {
+  margin: 0 0 1.25rem;
+  color: var(--text-muted);
+}
+
+.placeholder-card {
+  border: 1px dashed var(--border);
+  border-radius: 14px;
+  background: var(--surface);
+  padding: 1.5rem;
+}
+
+.placeholder-badge {
+  display: inline-block;
+  margin-bottom: 0.5rem;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  background: var(--surface-2);
+  color: var(--accent);
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.placeholder-card p {
+  margin: 0;
+  color: var(--text-muted);
+}
