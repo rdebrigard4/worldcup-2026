@@ -4,6 +4,13 @@
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  /* When launched from the iOS home screen (standalone, black-translucent
+     status bar + viewport-fit=cover), the page draws under the status bar
+     and notch. Reserve the safe-area insets so the header/settings aren't
+     hidden up top. env() is 0 in normal browsers, so this is a no-op there. */
+  padding-top: env(safe-area-inset-top);
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
 }
 
 /* Team-theme flag bar — only rendered when a team accent is active. Sits
@@ -123,7 +130,9 @@
 /* Tab bar — horizontally scrollable so all 7 tabs work on a phone */
 .tab-bar {
   position: sticky;
-  top: 0;
+  /* Stick just below the status-bar inset so the pinned tab row stays
+     visible in standalone mode (0 in a normal browser). */
+  top: env(safe-area-inset-top);
   z-index: 10;
   display: flex;
   flex-wrap: nowrap;
