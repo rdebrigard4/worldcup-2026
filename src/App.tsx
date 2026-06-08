@@ -4,6 +4,7 @@ import Groups from './tabs/Groups'
 import Bracket from './tabs/Bracket'
 import Locations from './tabs/Locations'
 import TeamInfo from './tabs/TeamInfo'
+import MyTeams from './tabs/MyTeams'
 import './App.css'
 
 type TabId =
@@ -65,6 +66,8 @@ export default function App() {
           <Locations />
         ) : active === 'teams' ? (
           <TeamInfo />
+        ) : active === 'myteams' ? (
+          <MyTeams />
         ) : (
           <>
             <h2 className="panel-title">{current.label}</h2>

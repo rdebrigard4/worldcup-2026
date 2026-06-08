@@ -1,0 +1,178 @@
+.myteams {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.myt-section-h {
+  margin: 0 0 0.6rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+}
+
+.myt-hint {
+  margin: -0.3rem 0 0.7rem;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+/* Followed-team cards */
+.myt-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.myt-card {
+  display: flex;
+  align-items: stretch;
+  gap: 0.85rem;
+  padding: 0.7rem 0.9rem;
+  border: 1px solid var(--border);
+  border-radius: 0.7rem;
+  background: var(--surface);
+  overflow: hidden;
+}
+
+.myt-stripe {
+  flex-shrink: 0;
+  width: 7px;
+  border-radius: 999px;
+}
+
+.myt-card-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.myt-card-name {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.myt-flag {
+  font-size: 1.1rem;
+  line-height: 1;
+}
+
+.myt-grp-tag {
+  margin-left: 0.15rem;
+  padding: 0.05rem 0.4rem;
+  border-radius: 999px;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+}
+
+.myt-card-meta {
+  margin-top: 0.2rem;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+.myt-next {
+  margin-top: 0.4rem;
+  font-size: 0.78rem;
+  color: var(--text);
+}
+
+.myt-next-label {
+  display: inline-block;
+  margin-right: 0.4rem;
+  padding: 0.05rem 0.4rem;
+  border-radius: 999px;
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--accent);
+  background: rgba(34, 197, 94, 0.15);
+  border: 1px solid rgba(34, 197, 94, 0.3);
+}
+
+.myt-unfollow {
+  flex-shrink: 0;
+  align-self: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 999px;
+  border: 1px solid rgba(34, 197, 94, 0.3);
+  background: rgba(34, 197, 94, 0.12);
+  color: var(--accent);
+  font-size: 1.05rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.myt-unfollow:hover {
+  background: rgba(34, 197, 94, 0.22);
+}
+
+/* Manage grid, organized by group */
+.myt-groups {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 0.85rem;
+}
+
+.myt-group {
+  border: 1px solid var(--border);
+  border-radius: 0.7rem;
+  background: var(--surface);
+  padding: 0.7rem 0.8rem;
+}
+
+.myt-group-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 0.5rem;
+}
+
+.myt-group-chips {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.myt-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  width: 100%;
+  padding: 0.4rem 0.55rem;
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  background: var(--surface-2);
+  color: var(--text);
+  font-size: 0.85rem;
+  text-align: left;
+  cursor: pointer;
+}
+
+.myt-toggle:hover {
+  border-color: var(--text-muted);
+}
+
+.myt-toggle--on {
+  font-weight: 600;
+}
+
+.myt-check {
+  flex-shrink: 0;
+  color: var(--accent);
+  font-size: 0.9rem;
+}
