@@ -1,6 +1,6 @@
 import { GROUPS, type Match } from '../data/schedule'
 import { GROUP_PATHS } from '../data/groupPaths'
-import { r32MatchById } from './matches'
+import { byKickoff, r32MatchById } from './matches'
 
 // Where a team travels: its group-stage matches in order, plus the two R32
 // venues its group could feed into (winner + runner-up paths).
@@ -14,7 +14,7 @@ export function groupMatchesForTeam(team: string): Match[] {
       if (m.t.includes(team)) out.push(m)
     })
   })
-  return out.sort((a, b) => +new Date(a.k) - +new Date(b.k))
+  return out.sort(byKickoff)
 }
 
 /** The R32 matches a team could reach (its group's winner + runner-up slots). */

@@ -1,9 +1,18 @@
 import { GROUPS, KNOCKOUT, type Match } from '../data/schedule'
+import { fmtKickoffTime } from './format'
 
 // Shared match lookups used by Favorites (resolve saved ids → match details),
 // the group-path helpers, and the Locations tab.
 
 export type LocatedMatch = { m: Match; phase: string; grp?: string }
+
+/** Sort comparator by kickoff time, earliest first. */
+export const byKickoff = (a: Match, b: Match): number => +new Date(a.k) - +new Date(b.k)
+
+/** "Venue · City · Time" meta line for a match, omitting any blank parts. */
+export function matchMeta(m: Match): string {
+  return [m.v, m.c, fmtKickoffTime(m.k)].filter(Boolean).join(' · ')
+}
 
 /** Every match across group + knockout stages, tagged with its phase. */
 export function allMatches(): LocatedMatch[] {

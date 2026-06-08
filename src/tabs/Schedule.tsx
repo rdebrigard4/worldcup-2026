@@ -1,8 +1,9 @@
 import { useMemo, useState } from 'react'
 import { GROUPS, KNOCKOUT, type Match } from '../data/schedule'
-import { fmtKickoffDate, fmtKickoffTime } from '../lib/format'
+import { fmtKickoffDate } from '../lib/format'
+import { byKickoff } from '../lib/matches'
 import { useFavTeams, useSavedMatches } from '../lib/storage'
-import MatchTeams from '../components/MatchTeams'
+import MatchSummary from '../components/MatchSummary'
 import './Schedule.css'
 
 type PhaseFilter = 'all' | 'group' | 'r32' | 'r16' | 'qf' | 'sf' | 'final'
@@ -50,7 +51,7 @@ export default function Schedule() {
           k.matches.forEach((m) => koMatch(m) && all.push({ m, phase: k.phase }))
         })
       }
-      all.sort((a, b) => +new Date(a.m.k) - +new Date(b.m.k))
+      all.sort((a, b) => byKickoff(a.m, b.m))
 
       const out: Section[] = []
       all.forEach((row) => {
@@ -131,9 +132,6 @@ export default function Schedule() {
               {section.rows.map(({ m }) => {
                 const saved = isSaved(m.id)
                 const fav = favIn(m.t)
-                const localDate = fmtKickoffDate(m.k) || m.date
-                const localTime = fmtKickoffTime(m.k)
-                const meta = [m.v, m.c, localTime].filter(Boolean).join(' · ')
                 return (
                   <button
                     key={m.id}
@@ -141,14 +139,10 @@ export default function Schedule() {
                     onClick={() => toggle(m.id)}
                     aria-pressed={saved}
                   >
-                    <span className="m-date">{localDate}</span>
-                    <span className="m-body">
-                      <span className="m-teams">
-                        <MatchTeams t={m.t} />
-                        {fav && <span className="fav-pill">{fav}</span>}
-                      </span>
-                      <span className="m-meta">{meta}</span>
-                    </span>
+                    <MatchSummary
+                      m={m}
+                      badge={fav ? <span className="fav-pill">{fav}</span> : undefined}
+                    />
                     <span className="m-star">{saved ? '★' : '☆'}</span>
                   </button>
                 )

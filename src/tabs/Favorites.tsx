@@ -1,9 +1,8 @@
 import { useMemo } from 'react'
 import { PHASE_LABELS } from '../data/schedule'
-import { findMatchById, type LocatedMatch } from '../lib/matches'
-import { fmtKickoffDate, fmtKickoffTime } from '../lib/format'
+import { byKickoff, findMatchById, type LocatedMatch } from '../lib/matches'
 import { useMatchNotes, useSavedMatches } from '../lib/storage'
-import MatchTeams from '../components/MatchTeams'
+import MatchSummary from '../components/MatchSummary'
 import './Favorites.css'
 
 // Order phases the way they unfold across the tournament.
@@ -26,7 +25,7 @@ export default function Favorites() {
     })
     return PHASE_ORDER.filter((p) => byPhase[p]?.length).map((phase) => ({
       phase,
-      rows: byPhase[phase].sort((a, b) => +new Date(a.m.k) - +new Date(b.m.k)),
+      rows: byPhase[phase].sort((a, b) => byKickoff(a.m, b.m)),
     }))
   }, [ids])
 
@@ -54,20 +53,13 @@ export default function Favorites() {
         <div key={section.phase} className="fav-section">
           <div className="group-hdr">{PHASE_LABELS[section.phase]}</div>
           {section.rows.map(({ m, grp }) => {
-            const localDate = fmtKickoffDate(m.k) || m.date
-            const localTime = fmtKickoffTime(m.k)
-            const meta = [m.v, m.c, localTime].filter(Boolean).join(' · ')
             return (
               <div key={m.id} className="fav-card">
                 <div className="fav-card-head">
-                  <span className="m-date">{localDate}</span>
-                  <span className="m-body">
-                    <span className="m-teams">
-                      <MatchTeams t={m.t} />
-                      {grp && <span className="fav-grp-tag">Group {grp}</span>}
-                    </span>
-                    <span className="m-meta">{meta}</span>
-                  </span>
+                  <MatchSummary
+                    m={m}
+                    badge={grp ? <span className="fav-grp-tag">Group {grp}</span> : undefined}
+                  />
                   <button
                     className="fav-unstar"
                     onClick={() => toggle(m.id)}
