@@ -1,5 +1,12 @@
-import { lazy, Suspense, useState, type ComponentType } from 'react'
+import { lazy, Suspense, useEffect, useState, type ComponentType } from 'react'
 import './App.css'
+import { useSettings, FONT_SCALE_MIN, FONT_SCALE_MAX } from './lib/storage'
+import {
+  TEAMS_WITH_COLORS,
+  teamPrimaryColor,
+  hexToRgb,
+  onAccentColor,
+} from './data/venues'
 
 // Tabs are lazy-loaded so each is split into its own chunk. This keeps the heavy
 // Leaflet map (Locations) out of the initial bundle — it only downloads when the
@@ -35,13 +42,95 @@ const TABS: Tab[] = [
 
 export default function App() {
   const [active, setActive] = useState<TabId>('schedule')
+  const [settingsOpen, setSettingsOpen] = useState(false)
+  const { settings, toggleTheme, setThemeTeam, bumpFont } = useSettings()
   const ActivePanel = TABS.find((t) => t.id === active)!.Component
+
+  // Push the appearance settings onto <html>: data-theme drives the light/dark
+  // palette, the root font-size scales every rem in the app, and (when a team
+  // is chosen) the accent variables are overridden inline.
+  useEffect(() => {
+    const root = document.documentElement
+    root.dataset.theme = settings.theme
+    root.style.fontSize = `${16 * settings.fontScale}px`
+    if (settings.themeTeam) {
+      const hex = teamPrimaryColor(settings.themeTeam)
+      root.style.setProperty('--accent', hex)
+      root.style.setProperty('--accent-rgb', hexToRgb(hex))
+      root.style.setProperty('--on-accent', onAccentColor(hex))
+    } else {
+      root.style.removeProperty('--accent')
+      root.style.removeProperty('--accent-rgb')
+      root.style.removeProperty('--on-accent')
+    }
+  }, [settings.theme, settings.fontScale, settings.themeTeam])
 
   return (
     <div className="app">
       <header className="app-header">
         <h1 className="app-title">World Cup 2026</h1>
+        <button
+          className="settings-btn"
+          aria-label="Appearance settings"
+          aria-expanded={settingsOpen}
+          onClick={() => setSettingsOpen((o) => !o)}
+        >
+          ⚙️
+        </button>
       </header>
+
+      {settingsOpen && (
+        <div className="settings-panel" role="region" aria-label="Appearance settings">
+          <div className="setting-row">
+            <span className="setting-label">Theme</span>
+            <button className="chip" onClick={toggleTheme}>
+              {settings.theme === 'dark' ? '🌙 Dark' : '☀️ Light'}
+            </button>
+          </div>
+
+          <div className="setting-row">
+            <span className="setting-label">Text size</span>
+            <div className="font-controls">
+              <button
+                className="chip"
+                aria-label="Decrease text size"
+                disabled={settings.fontScale <= FONT_SCALE_MIN}
+                onClick={() => bumpFont(-1)}
+              >
+                A−
+              </button>
+              <span className="font-pct">{Math.round(settings.fontScale * 100)}%</span>
+              <button
+                className="chip"
+                aria-label="Increase text size"
+                disabled={settings.fontScale >= FONT_SCALE_MAX}
+                onClick={() => bumpFont(1)}
+              >
+                A+
+              </button>
+            </div>
+          </div>
+
+          <div className="setting-row">
+            <label className="setting-label" htmlFor="theme-team">
+              Team color
+            </label>
+            <select
+              id="theme-team"
+              className="team-select"
+              value={settings.themeTeam ?? ''}
+              onChange={(e) => setThemeTeam(e.target.value || null)}
+            >
+              <option value="">Default (green)</option>
+              {TEAMS_WITH_COLORS.map((team) => (
+                <option key={team} value={team}>
+                  {team}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+      )}
 
       <nav className="tab-bar" aria-label="Sections">
         {TABS.map((tab) => (

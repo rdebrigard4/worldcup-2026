@@ -1,5 +1,5 @@
 :root {
-  /* Dark theme palette */
+  /* Dark theme palette (default) */
   --bg: #0b1220;
   --surface: #131c2e;
   --surface-2: #1b2740;
@@ -7,10 +7,27 @@
   --text: #e2e8f0;
   --text-muted: #94a3b8;
   --accent: #22c55e;
+  /* Accent as raw channels so we can build rgba() tints, plus a readable
+     text color to sit on top of the accent. Both are overridden inline by
+     App.tsx when a team theme is picked. */
+  --accent-rgb: 34, 197, 94;
+  --on-accent: #04210f;
 
   color-scheme: dark;
   font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
   line-height: 1.5;
+}
+
+/* Light theme — applied via data-theme on <html> (set by App.tsx). */
+:root[data-theme='light'] {
+  --bg: #f1f5f9;
+  --surface: #ffffff;
+  --surface-2: #eef2f7;
+  --border: #d3dceb;
+  --text: #0f172a;
+  --text-muted: #5b6b85;
+
+  color-scheme: light;
 }
 
 * {
@@ -59,7 +76,7 @@ button {
 .chip--on {
   background: var(--accent);
   border-color: var(--accent);
-  color: #04210f;
+  color: var(--on-accent);
 }
 
 /* Favorited-team pill */
@@ -68,9 +85,9 @@ button {
   font-weight: 700;
   padding: 0.1rem 0.45rem;
   border-radius: 999px;
-  background: rgba(34, 197, 94, 0.15);
+  background: rgba(var(--accent-rgb), 0.15);
   color: var(--accent);
-  border: 1px solid rgba(34, 197, 94, 0.3);
+  border: 1px solid rgba(var(--accent-rgb), 0.3);
 }
 
 /* Flag glyphs in match labels */

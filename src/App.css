@@ -8,6 +8,10 @@
 
 /* Header */
 .app-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
   padding: 1rem 1rem 0.75rem;
 }
 
@@ -16,6 +20,83 @@
   font-size: 1.5rem;
   font-weight: 700;
   letter-spacing: -0.01em;
+}
+
+.settings-btn {
+  flex: 0 0 auto;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  font-size: 1.1rem;
+  line-height: 1;
+  display: grid;
+  place-items: center;
+}
+
+.settings-btn:hover {
+  border-color: var(--accent);
+}
+
+/* Appearance settings panel */
+.settings-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin: 0 1rem 0.5rem;
+  padding: 0.9rem 1rem;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--surface);
+}
+
+.setting-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.setting-label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.font-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.font-pct {
+  min-width: 3ch;
+  text-align: center;
+  font-size: 0.85rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--text);
+}
+
+.chip:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.team-select {
+  font-family: inherit;
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 0.4rem 0.6rem;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+  color: var(--text);
+  max-width: 14rem;
+}
+
+.team-select:hover {
+  border-color: var(--accent);
 }
 
 /* Tab bar — horizontally scrollable so all 7 tabs work on a phone */

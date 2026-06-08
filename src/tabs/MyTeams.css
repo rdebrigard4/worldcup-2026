@@ -97,8 +97,8 @@
   letter-spacing: 0.04em;
   text-transform: uppercase;
   color: var(--accent);
-  background: rgba(34, 197, 94, 0.15);
-  border: 1px solid rgba(34, 197, 94, 0.3);
+  background: rgba(var(--accent-rgb), 0.15);
+  border: 1px solid rgba(var(--accent-rgb), 0.3);
 }
 
 .myt-unfollow {
@@ -107,8 +107,8 @@
   width: 2rem;
   height: 2rem;
   border-radius: 999px;
-  border: 1px solid rgba(34, 197, 94, 0.3);
-  background: rgba(34, 197, 94, 0.12);
+  border: 1px solid rgba(var(--accent-rgb), 0.3);
+  background: rgba(var(--accent-rgb), 0.12);
   color: var(--accent);
   font-size: 1.05rem;
   line-height: 1;
@@ -116,7 +116,7 @@
 }
 
 .myt-unfollow:hover {
-  background: rgba(34, 197, 94, 0.22);
+  background: rgba(var(--accent-rgb), 0.22);
 }
 
 /* Manage grid, organized by group */

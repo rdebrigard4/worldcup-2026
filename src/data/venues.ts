@@ -90,6 +90,25 @@ export function teamPrimaryColor(team: string): string {
   return colors ? pickPrimary(colors) : '#4ade80'
 }
 
+/** "#RRGGBB" → "r, g, b" for use inside rgba(var(--accent-rgb), …). */
+export function hexToRgb(hex: string): string {
+  const h = hex.replace('#', '')
+  const r = parseInt(h.slice(0, 2), 16)
+  const g = parseInt(h.slice(2, 4), 16)
+  const b = parseInt(h.slice(4, 6), 16)
+  return `${r}, ${g}, ${b}`
+}
+
+/** A readable text color (near-black or white) to sit on top of `hex`. */
+export function onAccentColor(hex: string): string {
+  const [r, g, b] = hexToRgb(hex).split(', ').map(Number)
+  const lum = (0.2126 * r + 0.7152 * g + 0.0722 * b) / 255
+  return lum > 0.55 ? '#04210f' : '#ffffff'
+}
+
+/** Names of teams that have a defined flag palette (for the theme picker). */
+export const TEAMS_WITH_COLORS = Object.keys(TEAM_COLORS).sort()
+
 /** A team's full flag palette (or a green fallback for unknown teams). */
 export function teamColors(team: string): string[] {
   return TEAM_COLORS[team] ?? ['#4ade80']

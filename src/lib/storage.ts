@@ -9,6 +9,7 @@ import { DEFAULT_FAV_TEAMS } from '../data/schedule'
 const SAVED_KEY = 'wc2026_saved'
 const FAVS_KEY = 'wc2026_favTeams'
 const NOTES_KEY = 'wc2026_notes'
+const SETTINGS_KEY = 'wc2026_settings'
 
 function read<T>(key: string, fallback: T): T {
   try {
@@ -43,6 +44,57 @@ function createStore<T>(key: string, initial: T) {
 const savedStore = createStore<Record<string, true>>(SAVED_KEY, {})
 const favStore = createStore<string[]>(FAVS_KEY, DEFAULT_FAV_TEAMS)
 const notesStore = createStore<Record<string, string>>(NOTES_KEY, {})
+
+// ── Appearance settings (theme, accent team, font size) ──
+
+export type ThemeMode = 'dark' | 'light'
+
+export type AppSettings = {
+  /** Light or dark palette. */
+  theme: ThemeMode
+  /** Team whose flag color drives the accent, or null for the default green. */
+  themeTeam: string | null
+  /** Root font-size multiplier (1 = base). Clamped on the way in. */
+  fontScale: number
+}
+
+export const FONT_SCALE_MIN = 0.85
+export const FONT_SCALE_MAX = 1.4
+const FONT_SCALE_STEP = 0.1
+
+const DEFAULT_SETTINGS: AppSettings = {
+  theme: 'dark',
+  themeTeam: null,
+  fontScale: 1,
+}
+
+const clampScale = (n: number) =>
+  Math.min(FONT_SCALE_MAX, Math.max(FONT_SCALE_MIN, Math.round(n * 100) / 100))
+
+// Merge with defaults so adding a field later doesn't break older saved blobs.
+const settingsStore = createStore<AppSettings>(SETTINGS_KEY, DEFAULT_SETTINGS)
+settingsStore.set({ ...DEFAULT_SETTINGS, ...settingsStore.get() })
+
+/** App appearance settings — shared everywhere, persisted to localStorage. */
+export function useSettings() {
+  const settings = useSyncExternalStore(settingsStore.subscribe, settingsStore.get)
+  const update = useCallback((patch: Partial<AppSettings>) => {
+    settingsStore.set({ ...settingsStore.get(), ...patch })
+  }, [])
+  const toggleTheme = useCallback(() => {
+    const cur = settingsStore.get()
+    settingsStore.set({ ...cur, theme: cur.theme === 'dark' ? 'light' : 'dark' })
+  }, [])
+  const setThemeTeam = useCallback((team: string | null) => update({ themeTeam: team }), [update])
+  const bumpFont = useCallback((dir: 1 | -1) => {
+    const cur = settingsStore.get()
+    update({ fontScale: clampScale(cur.fontScale + dir * FONT_SCALE_STEP) })
+  }, [update])
+  return useMemo(
+    () => ({ settings, update, toggleTheme, setThemeTeam, bumpFont }),
+    [settings, update, toggleTheme, setThemeTeam, bumpFont],
+  )
+}
 
 /** Saved (starred) match ids — shared by Schedule, Bracket, and Favorites. */
 export function useSavedMatches() {
