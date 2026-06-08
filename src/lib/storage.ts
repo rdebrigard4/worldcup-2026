@@ -1,4 +1,4 @@
-import { useSyncExternalStore } from 'react'
+import { useCallback, useMemo, useSyncExternalStore } from 'react'
 import { DEFAULT_FAV_TEAMS } from '../data/schedule'
 
 // Module-level stores shared across every tab. Because the state lives outside
@@ -61,13 +61,16 @@ export function useSavedMatches() {
 /** Favorited national teams — shared by Schedule, Groups, and My Teams. */
 export function useFavTeams() {
   const teams = useSyncExternalStore(favStore.subscribe, favStore.get)
-  const favIn = (matchTeams: string) => teams.find((f) => matchTeams.includes(f))
-  const isFav = (team: string) => teams.includes(team)
-  const toggleTeam = (team: string) => {
+  // Memoize the helpers so their identities stay stable until `teams` changes —
+  // otherwise consumers' useMemo/useEffect deps that reference them recompute
+  // on every render.
+  const favIn = useCallback((matchTeams: string) => teams.find((f) => matchTeams.includes(f)), [teams])
+  const isFav = useCallback((team: string) => teams.includes(team), [teams])
+  const toggleTeam = useCallback((team: string) => {
     const cur = favStore.get()
     favStore.set(cur.includes(team) ? cur.filter((t) => t !== team) : [...cur, team])
-  }
-  return { teams, favIn, isFav, toggleTeam }
+  }, [])
+  return useMemo(() => ({ teams, favIn, isFav, toggleTeam }), [teams, favIn, isFav, toggleTeam])
 }
 
 /** Per-match notes (keyed by match id) — used by the Favorites tab. */

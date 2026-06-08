@@ -18,8 +18,10 @@ type Loadable<T> = { state: 'loading' | 'done'; data?: T }
 
 export default function TeamInfo() {
   const [picked, setPicked] = useState<string>(loadPicked)
-  const [summary, setSummary] = useState<Loadable<WikiSummary>>({ state: 'loading' })
-  const [facts, setFacts] = useState<Loadable<TeamFacts>>({ state: 'loading' })
+  // Fetched data is tagged with the team it belongs to; loading is then derived
+  // (data is stale → still loading) rather than set synchronously in the effect.
+  const [summaryFor, setSummaryFor] = useState<{ team: string; data: WikiSummary } | null>(null)
+  const [factsFor, setFactsFor] = useState<{ team: string; data: TeamFacts } | null>(null)
   const { isFav, toggleTeam } = useFavTeams()
 
   const teams = useMemo(() => tournamentTeams(), [])
@@ -35,18 +37,27 @@ export default function TeamInfo() {
   useEffect(() => {
     if (!picked) return
     let cancelled = false
-    setSummary({ state: 'loading' })
-    setFacts({ state: 'loading' })
     fetchWikiSummary(picked).then((data) => {
-      if (!cancelled) setSummary({ state: 'done', data })
+      if (!cancelled) setSummaryFor({ team: picked, data })
     })
     fetchTeamFacts(picked).then((data) => {
-      if (!cancelled) setFacts({ state: 'done', data })
+      if (!cancelled) setFactsFor({ team: picked, data })
     })
     return () => {
       cancelled = true
     }
   }, [picked])
+
+  // Data is shown only when it matches the currently picked team; otherwise we're
+  // still loading the new selection.
+  const summary: Loadable<WikiSummary> =
+    summaryFor && summaryFor.team === picked
+      ? { state: 'done', data: summaryFor.data }
+      : { state: 'loading' }
+  const facts: Loadable<TeamFacts> =
+    factsFor && factsFor.team === picked
+      ? { state: 'done', data: factsFor.data }
+      : { state: 'loading' }
 
   const group = picked ? GROUPS.find((g) => g.teams.includes(picked)) : undefined
   const matches = useMemo(() => (picked ? groupMatchesForTeam(picked) : []), [picked])
