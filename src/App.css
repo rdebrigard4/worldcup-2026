@@ -29,11 +29,11 @@
   background: linear-gradient(180deg, rgba(var(--accent-rgb), 0.28), transparent);
 }
 
-/* Accent title only in dark mode — a pale team accent (e.g. Argentina
-   sky-blue) would wash out against the light background. */
+/* In dark mode keep the title white for guaranteed contrast against any
+   team accent, but let an accent glow halo it so it still reads as themed. */
 :root[data-themed][data-theme='dark'] .app-title {
-  color: var(--accent);
-  text-shadow: 0 1px 12px rgba(var(--accent-rgb), 0.45);
+  color: #ffffff;
+  text-shadow: 0 1px 14px rgba(var(--accent-rgb), 0.6);
 }
 
 .app-title {
