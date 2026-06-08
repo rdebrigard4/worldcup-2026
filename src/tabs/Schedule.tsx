@@ -23,7 +23,7 @@ type Section = { header: string; rows: Row[] }
 
 export default function Schedule() {
   const [activePhase, setActivePhase] = useState<PhaseFilter>('all')
-  const [sortByDate, setSortByDate] = useState(false)
+  const [sortByDate, setSortByDate] = useState(true)
   const [favOnly, setFavOnly] = useState(false)
   const [query, setQuery] = useState('')
 
