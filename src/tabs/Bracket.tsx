@@ -41,7 +41,7 @@ function BracketCard({
       aria-pressed={saved}
     >
       <span className="brd-card-top">
-        <span className="brd-card-teams"><MatchTeams t={m.t} /></span>
+        <span className="brd-card-teams"><MatchTeams t={m.t} matchId={m.id} /></span>
         <span className="brd-card-star">{saved ? '★' : '☆'}</span>
       </span>
       <span className="brd-card-meta">{meta}</span>

@@ -18,7 +18,7 @@ export default function MatchSummary({ m, badge }: { m: Match; badge?: ReactNode
       </span>
       <span className="m-body">
         <span className="m-teams">
-          <MatchTeams t={m.t} />
+          <MatchTeams t={m.t} matchId={m.id} />
           {badge}
         </span>
         <span className="m-meta">{matchMeta(m)}</span>

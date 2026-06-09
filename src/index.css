@@ -127,6 +127,61 @@ button {
   font-weight: 500;
 }
 
+/* Live / final scores in match labels */
+.mt-score {
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  margin: 0 0.15rem;
+}
+
+.mt-dash {
+  color: var(--text-muted);
+  font-weight: 600;
+  margin: 0 0.3rem;
+}
+
+.mt-live {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  margin-left: 0.45rem;
+  padding: 0.05rem 0.4rem;
+  border-radius: 999px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: #fff;
+  background: #ef4444;
+}
+
+.mt-live-dot {
+  width: 0.42rem;
+  height: 0.42rem;
+  border-radius: 50%;
+  background: #fff;
+  animation: mt-pulse 1.4s ease-in-out infinite;
+}
+
+@keyframes mt-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.25; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mt-live-dot { animation: none; }
+}
+
+.mt-ft {
+  margin-left: 0.45rem;
+  padding: 0.05rem 0.4rem;
+  border-radius: 999px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: var(--text-muted);
+  background: var(--surface-2);
+}
+
 /* Empty state */
 .empty {
   text-align: center;
