@@ -79,20 +79,6 @@
   font-size: 0.8rem;
 }
 
-.grp-tag {
-  flex: 0 0 auto;
-  font-size: 0.66rem;
-  font-weight: 600;
-}
-
-.grp-tag--w {
-  color: var(--accent);
-}
-
-.grp-tag--ru {
-  color: #60a5fa;
-}
-
 /* Knockout path */
 .grp-path {
   border-top: 1px dashed var(--border);

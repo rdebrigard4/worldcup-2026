@@ -22,15 +22,13 @@ export default function Groups() {
             </div>
 
             <div className="grp-teams">
-              {g.teams.map((team, i) => (
+              {g.teams.map((team) => (
                 <div key={team} className="grp-team-row">
                   <span className={`grp-team${isFav(team) ? ' grp-team--fav' : ''}`}>
                     {isFav(team) && <span className="grp-star">⭐</span>}
                     <span className="mt-flag">{teamFlag(team)}</span>
                     {team}
                   </span>
-                  {i === 0 && <span className="grp-tag grp-tag--w">Winner →</span>}
-                  {i === 1 && <span className="grp-tag grp-tag--ru">Runner-up →</span>}
                 </div>
               ))}
             </div>
