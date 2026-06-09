@@ -81,13 +81,27 @@
   background: var(--surface-2);
 }
 
-.m-date {
+.m-when {
   flex: 0 0 auto;
-  width: 3.2rem;
+  width: 4.1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+.m-date {
   font-size: 0.72rem;
   font-weight: 600;
   line-height: 1.2;
   color: var(--text-muted);
+}
+
+.m-time {
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.1;
+  white-space: nowrap;
+  color: var(--accent);
 }
 
 .m-body {
