@@ -31,6 +31,9 @@ export default function Groups() {
                 <span className="grp-pos" />
                 <span className="grp-team-cell">Team</span>
                 <span className="grp-stat" title="Played">P</span>
+                <span className="grp-stat" title="Wins">W</span>
+                <span className="grp-stat" title="Draws">D</span>
+                <span className="grp-stat" title="Losses">L</span>
                 <span className="grp-stat" title="Goal difference">GD</span>
                 <span className="grp-stat grp-pts" title="Points">Pts</span>
               </div>
@@ -47,6 +50,9 @@ export default function Groups() {
                     <span className="grp-team-name">{s.team}</span>
                   </span>
                   <span className="grp-stat">{s.p}</span>
+                  <span className="grp-stat">{s.w}</span>
+                  <span className="grp-stat">{s.d}</span>
+                  <span className="grp-stat">{s.l}</span>
                   <span className="grp-stat">{fmtGD(s.gd)}</span>
                   <span className="grp-stat grp-pts">{s.pts}</span>
                 </div>
