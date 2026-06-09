@@ -1,5 +1,6 @@
 import { lazy, Suspense, useEffect, useState, type ComponentType } from 'react'
 import './App.css'
+import ErrorBoundary from './components/ErrorBoundary'
 import { useSettings, FONT_SCALE_MIN, FONT_SCALE_MAX } from './lib/storage'
 import {
   TEAMS_WITH_COLORS,
@@ -156,9 +157,13 @@ export default function App() {
       </nav>
 
       <main className="tab-panel">
-        <Suspense fallback={<div className="empty">Loading…</div>}>
-          <ActivePanel />
-        </Suspense>
+        {/* Keyed by the active tab so a crash is contained to that tab and
+            switching tabs resets the boundary. The tab bar above stays alive. */}
+        <ErrorBoundary key={active}>
+          <Suspense fallback={<div className="empty">Loading…</div>}>
+            <ActivePanel />
+          </Suspense>
+        </ErrorBoundary>
       </main>
     </div>
   )

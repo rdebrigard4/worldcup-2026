@@ -193,3 +193,29 @@ button {
   font-size: 2rem;
   margin-bottom: 0.5rem;
 }
+
+/* Error boundary fallback (a crashed tab) */
+.error-boundary {
+  text-align: center;
+  padding: 2.5rem 1rem;
+}
+
+.error-boundary-title {
+  margin: 0 0 0.5rem;
+  font-size: 1.05rem;
+}
+
+.error-boundary-msg {
+  color: var(--text-muted);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.8rem;
+  word-break: break-word;
+  margin: 0 auto 1.25rem;
+  max-width: 32rem;
+}
+
+.error-boundary-actions {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+}
