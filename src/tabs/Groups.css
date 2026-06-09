@@ -42,25 +42,67 @@
   color: var(--text-muted);
 }
 
-/* Team rows */
-.grp-teams {
-  display: flex;
-  flex-direction: column;
-  gap: 0.1rem;
+/* Standings table */
+.grp-table {
   margin-bottom: 0.75rem;
 }
 
-.grp-team-row {
-  display: flex;
+.grp-row {
+  display: grid;
+  grid-template-columns: 1.3rem 1fr 1.5rem 2rem 2rem;
   align-items: center;
-  justify-content: space-between;
-  gap: 0.5rem;
+  gap: 0.4rem;
   padding: 0.3rem 0;
   border-bottom: 1px solid var(--border);
 }
 
-.grp-team-row:last-child {
+.grp-row:last-child {
   border-bottom: none;
+}
+
+.grp-row--head {
+  border-bottom: 1px solid var(--border);
+  padding-top: 0;
+  font-size: 0.62rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+}
+
+/* Top two qualify — tie the position marker to the knockout-path dots */
+.grp-row--q {
+  border-left: 3px solid transparent;
+  margin-left: -1rem;
+  padding-left: calc(1rem - 3px);
+}
+
+.grp-row--w {
+  border-left-color: var(--accent);
+}
+
+.grp-row--ru {
+  border-left-color: #60a5fa;
+}
+
+.grp-pos {
+  text-align: center;
+  font-size: 0.74rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.grp-row--w .grp-pos {
+  color: var(--accent);
+}
+
+.grp-row--ru .grp-pos {
+  color: #60a5fa;
+}
+
+.grp-team-cell {
+  min-width: 0;
 }
 
 .grp-team {
@@ -71,12 +113,31 @@
   min-width: 0;
 }
 
+.grp-team-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .grp-team--fav {
   font-weight: 700;
 }
 
 .grp-star {
   font-size: 0.8rem;
+  flex: 0 0 auto;
+}
+
+.grp-stat {
+  text-align: center;
+  font-size: 0.8rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-muted);
+}
+
+.grp-pts {
+  font-weight: 800;
+  color: var(--text);
 }
 
 /* Knockout path */
