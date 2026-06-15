@@ -51,13 +51,11 @@ export default function Schedule() {
     if (didScroll.current || !targetRef.current) return
     didScroll.current = true
     const el = targetRef.current
-    // Defer to the next frame so the --chrome-h / --filters-h offsets (set in
-    // sibling/parent effects, which can run after this one) are applied first.
-    const id = requestAnimationFrame(() => {
-      // Land the target flush *below* its own date header, which pins just under
-      // the chrome + filter bar. Offsetting by the full header height keeps the
-      // PREVIOUS day's last game fully scrolled behind the pinned chrome — a
-      // fixed scroll-margin guess overshot and left it peeking through the gap.
+
+    // Land the target flush *below* its own date header, which pins just under
+    // the chrome + filter bar. Offsetting by the full header height keeps the
+    // PREVIOUS day's last game fully scrolled behind the pinned chrome.
+    const place = () => {
       const cs = getComputedStyle(document.documentElement)
       const num = (v: string) => parseFloat(cs.getPropertyValue(v)) || 0
       const offset = num('--chrome-h') + num('--filters-h')
@@ -65,8 +63,32 @@ export default function Schedule() {
       const hdrH = hdr ? hdr.getBoundingClientRect().height : 0
       const top = window.scrollY + el.getBoundingClientRect().top - offset - hdrH
       window.scrollTo({ top: Math.max(0, top) })
-    })
-    return () => cancelAnimationFrame(id)
+    }
+
+    // The list + live scores lay out asynchronously after mount (most visibly
+    // on narrow mobile, where rows grow as scorelines/badges appear). That
+    // shifts the target after a one-shot scroll, leaving it short. So re-place
+    // on every layout change for a short window — until the user scrolls.
+    let done = false
+    const finish = () => {
+      if (done) return
+      done = true
+      ro.disconnect()
+      clearTimeout(stop)
+      window.removeEventListener('touchmove', finish)
+      window.removeEventListener('wheel', finish)
+    }
+    const raf = requestAnimationFrame(place)
+    const ro = new ResizeObserver(() => place())
+    ro.observe(document.body)
+    const stop = setTimeout(finish, 1800)
+    window.addEventListener('touchmove', finish, { passive: true })
+    window.addEventListener('wheel', finish, { passive: true })
+
+    return () => {
+      cancelAnimationFrame(raf)
+      finish()
+    }
   }, [])
 
   // Publish the filter bar's live height as --filters-h so the sticky date
