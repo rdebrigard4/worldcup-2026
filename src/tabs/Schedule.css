@@ -81,6 +81,12 @@
   background: var(--surface-2);
 }
 
+/* On open we auto-scroll to the nearest current/upcoming match; this offset
+   keeps it clear of the sticky tab bar (plus the standalone status-bar inset). */
+.match--upcoming-anchor {
+  scroll-margin-top: calc(env(safe-area-inset-top) + 64px);
+}
+
 .m-when {
   flex: 0 0 auto;
   width: 4.1rem;

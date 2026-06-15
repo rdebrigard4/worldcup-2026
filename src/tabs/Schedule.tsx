@@ -1,7 +1,7 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { GROUPS, KNOCKOUT, type Match } from '../data/schedule'
 import { fmtKickoffDate } from '../lib/format'
-import { byKickoff } from '../lib/matches'
+import { allMatches, byKickoff } from '../lib/matches'
 import { useFavTeams, useSavedMatches } from '../lib/storage'
 import MatchSummary from '../components/MatchSummary'
 import './Schedule.css'
@@ -29,6 +29,29 @@ export default function Schedule() {
 
   const { isSaved, toggle } = useSavedMatches()
   const { favIn } = useFavTeams()
+
+  // The nearest current-or-upcoming match: the first match (chronologically)
+  // that is in progress or hasn't kicked off yet. A live game stays "current"
+  // for LIVE_WINDOW_MS after kickoff so it isn't scrolled past while playing.
+  const LIVE_WINDOW_MS = 2.5 * 60 * 60 * 1000
+  const targetId = useMemo(() => {
+    const now = Date.now()
+    const upcoming = allMatches()
+      .map((x) => x.m)
+      .sort(byKickoff)
+      .find((m) => +new Date(m.k) >= now - LIVE_WINDOW_MS)
+    return upcoming?.id ?? null
+  }, [LIVE_WINDOW_MS])
+
+  // Auto-scroll to that match once, on first mount, so users land on the
+  // action instead of the top of a list of already-completed games.
+  const targetRef = useRef<HTMLButtonElement | null>(null)
+  const didScroll = useRef(false)
+  useEffect(() => {
+    if (didScroll.current || !targetRef.current) return
+    targetRef.current.scrollIntoView({ block: 'start' })
+    didScroll.current = true
+  }, [])
 
   const sections = useMemo<Section[]>(() => {
     const q = query.trim().toLowerCase()
@@ -135,7 +158,8 @@ export default function Schedule() {
                 return (
                   <button
                     key={m.id}
-                    className={`match${saved ? ' match--saved' : ''}`}
+                    ref={m.id === targetId ? targetRef : undefined}
+                    className={`match${saved ? ' match--saved' : ''}${m.id === targetId ? ' match--upcoming-anchor' : ''}`}
                     onClick={() => toggle(m.id)}
                     aria-pressed={saved}
                   >
