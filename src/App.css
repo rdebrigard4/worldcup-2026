@@ -169,11 +169,12 @@
 }
 
 /* Schedule scrolls its own match list, so the panel itself doesn't scroll —
-   drop the fixed bottom padding (it would otherwise show as a dead strip
-   below the list) and let the list run to the bottom edge, reserving only
-   the iOS home-indicator inset (0 in a normal browser). */
+   drop the fixed bottom padding entirely (it would otherwise show as a dead
+   strip below the list, including the iOS home-indicator inset) and let the
+   list run all the way to the bottom edge. The inset is reserved inside the
+   scrolling list instead (see .match-list), so it's not a fixed bar. */
 .tab-panel--schedule {
-  padding-bottom: env(safe-area-inset-bottom);
+  padding-bottom: 0;
 }
 
 .panel-title {

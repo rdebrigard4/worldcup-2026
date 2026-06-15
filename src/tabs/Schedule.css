@@ -51,7 +51,9 @@
   flex: 1;
   min-height: 0;
   overflow-y: auto;
-  padding-bottom: 0.75rem;
+  /* Breathing room at the end of the scroll, plus the iOS home-indicator
+     inset — kept *inside* the scroll so it's not a fixed bar at the bottom. */
+  padding-bottom: calc(0.75rem + env(safe-area-inset-bottom));
 }
 
 .group-hdr {
