@@ -19,7 +19,7 @@
  * lands without anyone reinstalling the home-screen shortcut.
  */
 
-const CACHE = 'wc2026-v1'
+const CACHE = 'wc2026-v2'
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
@@ -74,6 +74,11 @@ self.addEventListener('fetch', (event) => {
     )
     return
   }
+
+  // Only cache Vite's fingerprinted, immutable build assets (/assets/*).
+  // Everything else — notably main.tsx's index.html freshness probe — passes
+  // straight to the network, so it never serves stale and never pollutes cache.
+  if (!url.pathname.includes('/assets/')) return
 
   // Cache-first for fingerprinted, same-origin assets.
   event.respondWith(

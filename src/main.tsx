@@ -30,3 +30,34 @@ if (import.meta.env.PROD && 'serviceWorker' in navigator) {
     })
   })
 }
+
+// Self-update without reinstalling the home-screen shortcut. The service worker
+// alone isn't enough: a standalone iOS app that's warm-resumed (switched back
+// to, not cold-launched) keeps the old JS bundle in memory and never re-fetches
+// the HTML, so it can sit on a stale build indefinitely. To fix that, whenever
+// the app becomes visible/focused we ask the server for the latest index.html
+// and compare its build id to the one baked into THIS bundle. If a newer build
+// is live, reload once to adopt it. (No-store + a cache-bust query so we always
+// hit the network; the service worker passes this probe straight through.)
+if (import.meta.env.PROD) {
+  let updating = false
+  const checkForUpdate = async () => {
+    if (updating || document.visibilityState !== 'visible' || !navigator.onLine) return
+    try {
+      const res = await fetch(`${import.meta.env.BASE_URL}index.html?ts=${Date.now()}`, {
+        cache: 'no-store',
+      })
+      if (!res.ok) return
+      const live = (await res.text()).match(/name="build-id" content="([^"]+)"/)?.[1]
+      if (live && live !== __BUILD_ID__) {
+        updating = true
+        window.location.reload()
+      }
+    } catch {
+      /* offline or blocked — we'll check again on the next focus */
+    }
+  }
+  document.addEventListener('visibilitychange', checkForUpdate)
+  window.addEventListener('focus', checkForUpdate)
+  checkForUpdate()
+}
