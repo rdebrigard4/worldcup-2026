@@ -56,23 +56,19 @@ html,
 body {
   margin: 0;
   padding: 0;
-  /* Full-height chain (html → body → #root → .app) measured off the real
-     viewport. Using % rather than vh/dvh avoids the iOS standalone bug where
-     100dvh comes up short and leaves a black strip below the app. */
-  height: 100%;
   background: var(--bg);
 }
 
-#root {
-  height: 100%;
-}
-
+/* Natural document flow: the WINDOW scrolls (no fixed-height app box). This is
+   what the pre-2026-06-14 app did, and it's the only layout that lets the iOS
+   standalone install paint the navy background edge-to-edge under the home
+   indicator. Every bounded-height approach (height:100%, 100dvh, position:fixed
+   inset:0) left a navy bar in the home-indicator band because the box never
+   reached the physical bottom. The header/tabs stay put via position:sticky. */
 body {
+  min-height: 100vh;
+  min-height: 100dvh;
   color: var(--text);
-  /* The app owns its own height and manages scrolling internally (the top
-     chrome stays put while content scrolls), so the window itself never
-     scrolls. */
-  overflow: hidden;
   -webkit-font-smoothing: antialiased;
 }
 

@@ -49,8 +49,32 @@ export default function Schedule() {
   const didScroll = useRef(false)
   useEffect(() => {
     if (didScroll.current || !targetRef.current) return
-    targetRef.current.scrollIntoView({ block: 'start' })
     didScroll.current = true
+    // Defer to the next frame so the --chrome-h / --filters-h offsets (set in
+    // sibling/parent effects, which can run after this one) are applied before
+    // scrollIntoView reads the anchor's scroll-margin-top.
+    const el = targetRef.current
+    const id = requestAnimationFrame(() => el.scrollIntoView({ block: 'start' }))
+    return () => cancelAnimationFrame(id)
+  }, [])
+
+  // Publish the filter bar's live height as --filters-h so the sticky date
+  // headers (and the auto-scroll offset) sit just below it. Re-measures when
+  // the bar wraps to more rows on resize; cleared on unmount so other tabs
+  // (e.g. Favorites, which reuse .group-hdr but have no filter bar) see 0.
+  const filtersRef = useRef<HTMLDivElement | null>(null)
+  useEffect(() => {
+    const el = filtersRef.current
+    if (!el) return
+    const root = document.documentElement
+    const apply = () => root.style.setProperty('--filters-h', `${el.offsetHeight}px`)
+    apply()
+    const ro = new ResizeObserver(apply)
+    ro.observe(el)
+    return () => {
+      ro.disconnect()
+      root.style.removeProperty('--filters-h')
+    }
   }, [])
 
   const sections = useMemo<Section[]>(() => {
@@ -110,7 +134,7 @@ export default function Schedule() {
 
   return (
     <div className="schedule">
-      <div className="filters">
+      <div className="filters" ref={filtersRef}>
         <button
           className={`chip${sortByDate ? ' chip--on' : ''}`}
           onClick={() => setSortByDate((v) => !v)}

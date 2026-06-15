@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect, useState, type ComponentType } from 'react'
+import { lazy, Suspense, useEffect, useRef, useState, type ComponentType } from 'react'
 import './App.css'
 import ErrorBoundary from './components/ErrorBoundary'
 import { useSettings, FONT_SCALE_MIN, FONT_SCALE_MAX } from './lib/storage'
@@ -48,6 +48,25 @@ export default function App() {
   const [settingsOpen, setSettingsOpen] = useState(false)
   const { settings, toggleTheme, setThemeTeam, bumpFont } = useSettings()
   const ActivePanel = TABS.find((t) => t.id === active)!.Component
+  const chromeRef = useRef<HTMLDivElement | null>(null)
+
+  // Publish the pinned chrome's live height as --chrome-h so content that needs
+  // to stick *below* it (the Schedule filter bar, date headers) has an exact
+  // offset. Re-measures on font-scale changes and when the settings panel opens
+  // (ResizeObserver fires on the chrome's own size change).
+  useEffect(() => {
+    const el = chromeRef.current
+    if (!el) return
+    const root = document.documentElement
+    const apply = () => root.style.setProperty('--chrome-h', `${el.offsetHeight}px`)
+    apply()
+    const ro = new ResizeObserver(apply)
+    ro.observe(el)
+    return () => {
+      ro.disconnect()
+      root.style.removeProperty('--chrome-h')
+    }
+  }, [])
 
   // Push the appearance settings onto <html>: data-theme drives the light/dark
   // palette, the root font-size scales every rem in the app, and (when a team
@@ -75,86 +94,88 @@ export default function App() {
 
   return (
     <div className="app">
-      {settings.themeTeam && (
-        <div className="team-stripe" aria-hidden="true" title={`${settings.themeTeam} theme`} />
-      )}
-      <header className="app-header">
-        <h1 className="app-title">World Cup 2026</h1>
-        <button
-          className="settings-btn"
-          aria-label="Appearance settings"
-          aria-expanded={settingsOpen}
-          onClick={() => setSettingsOpen((o) => !o)}
-        >
-          ⚙️
-        </button>
-      </header>
+      <div className="app-chrome" ref={chromeRef}>
+        {settings.themeTeam && (
+          <div className="team-stripe" aria-hidden="true" title={`${settings.themeTeam} theme`} />
+        )}
+        <header className="app-header">
+          <h1 className="app-title">World Cup 2026</h1>
+          <button
+            className="settings-btn"
+            aria-label="Appearance settings"
+            aria-expanded={settingsOpen}
+            onClick={() => setSettingsOpen((o) => !o)}
+          >
+            ⚙️
+          </button>
+        </header>
 
-      {settingsOpen && (
-        <div className="settings-panel" role="region" aria-label="Appearance settings">
-          <div className="setting-row">
-            <span className="setting-label">Theme</span>
-            <button className="chip" onClick={toggleTheme}>
-              {settings.theme === 'dark' ? '🌙 Dark' : '☀️ Light'}
-            </button>
-          </div>
-
-          <div className="setting-row">
-            <span className="setting-label">Text size</span>
-            <div className="font-controls">
-              <button
-                className="chip"
-                aria-label="Decrease text size"
-                disabled={settings.fontScale <= FONT_SCALE_MIN}
-                onClick={() => bumpFont(-1)}
-              >
-                A−
-              </button>
-              <span className="font-pct">{Math.round(settings.fontScale * 100)}%</span>
-              <button
-                className="chip"
-                aria-label="Increase text size"
-                disabled={settings.fontScale >= FONT_SCALE_MAX}
-                onClick={() => bumpFont(1)}
-              >
-                A+
+        {settingsOpen && (
+          <div className="settings-panel" role="region" aria-label="Appearance settings">
+            <div className="setting-row">
+              <span className="setting-label">Theme</span>
+              <button className="chip" onClick={toggleTheme}>
+                {settings.theme === 'dark' ? '🌙 Dark' : '☀️ Light'}
               </button>
             </div>
-          </div>
 
-          <div className="setting-row">
-            <label className="setting-label" htmlFor="theme-team">
-              Team color
-            </label>
-            <select
-              id="theme-team"
-              className="team-select"
-              value={settings.themeTeam ?? ''}
-              onChange={(e) => setThemeTeam(e.target.value || null)}
+            <div className="setting-row">
+              <span className="setting-label">Text size</span>
+              <div className="font-controls">
+                <button
+                  className="chip"
+                  aria-label="Decrease text size"
+                  disabled={settings.fontScale <= FONT_SCALE_MIN}
+                  onClick={() => bumpFont(-1)}
+                >
+                  A−
+                </button>
+                <span className="font-pct">{Math.round(settings.fontScale * 100)}%</span>
+                <button
+                  className="chip"
+                  aria-label="Increase text size"
+                  disabled={settings.fontScale >= FONT_SCALE_MAX}
+                  onClick={() => bumpFont(1)}
+                >
+                  A+
+                </button>
+              </div>
+            </div>
+
+            <div className="setting-row">
+              <label className="setting-label" htmlFor="theme-team">
+                Team color
+              </label>
+              <select
+                id="theme-team"
+                className="team-select"
+                value={settings.themeTeam ?? ''}
+                onChange={(e) => setThemeTeam(e.target.value || null)}
+              >
+                <option value="">Default (green)</option>
+                {TEAMS_WITH_COLORS.map((team) => (
+                  <option key={team} value={team}>
+                    {team}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+        )}
+
+        <nav className="tab-bar" aria-label="Sections">
+          {TABS.map((tab) => (
+            <button
+              key={tab.id}
+              className={`chip${tab.id === active ? ' chip--on' : ''}`}
+              aria-current={tab.id === active ? 'page' : undefined}
+              onClick={() => setActive(tab.id)}
             >
-              <option value="">Default (green)</option>
-              {TEAMS_WITH_COLORS.map((team) => (
-                <option key={team} value={team}>
-                  {team}
-                </option>
-              ))}
-            </select>
-          </div>
-        </div>
-      )}
-
-      <nav className="tab-bar" aria-label="Sections">
-        {TABS.map((tab) => (
-          <button
-            key={tab.id}
-            className={`chip${tab.id === active ? ' chip--on' : ''}`}
-            aria-current={tab.id === active ? 'page' : undefined}
-            onClick={() => setActive(tab.id)}
-          >
-            {tab.label}
-          </button>
-        ))}
-      </nav>
+              {tab.label}
+            </button>
+          ))}
+        </nav>
+      </div>
 
       <main className={`tab-panel tab-panel--${active}`}>
         {/* Keyed by the active tab so a crash is contained to that tab and

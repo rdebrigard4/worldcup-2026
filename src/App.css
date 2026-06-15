@@ -1,23 +1,28 @@
 .app {
-  /* Pin to the full visual viewport with position:fixed + inset:0. With
-     viewport-fit=cover this sizes edge-to-edge — INCLUDING under the home
-     indicator — so the iOS standalone install no longer shows the web view's
-     black backdrop at the bottom (which %/vh/dvh heights all left exposed).
-     inset:0 + max-width + margin:auto still centers the column on wide screens. */
-  position: fixed;
-  inset: 0;
+  /* A plain block in normal document flow — the WINDOW scrolls, not a bounded
+     box. (Bounded-height boxes left a navy bar under the iOS home indicator;
+     see index.css.) max-width + margin:auto still centers the column on wide
+     screens. The left/right safe-area insets keep content out of the notch in
+     landscape; the top inset is handled by .app-chrome so it can stay pinned. */
   max-width: 900px;
   margin: 0 auto;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  /* When launched from the iOS home screen (standalone, black-translucent
-     status bar + viewport-fit=cover), the page draws under the status bar
-     and notch. Reserve the safe-area insets so the header/settings aren't
-     hidden up top. env() is 0 in normal browsers, so this is a no-op there. */
-  padding-top: env(safe-area-inset-top);
   padding-left: env(safe-area-inset-left);
   padding-right: env(safe-area-inset-right);
+}
+
+/* Pinned chrome — header + (optional) settings panel + tab bar travel together
+   and stick to the top of the window while the content scrolls beneath. One
+   sticky block (no fragile multi-level stacking). padding-top reserves the iOS
+   status-bar inset so the title sits below the notch, and the navy background
+   keeps the status-bar area opaque as content scrolls under it. The measured
+   height is published as --chrome-h (see App.tsx) so the Schedule filter bar
+   and date headers can stick just below it. */
+.app-chrome {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: var(--bg);
+  padding-top: env(safe-area-inset-top);
 }
 
 /* Team-theme flag bar — only rendered when a team accent is active. Sits
@@ -136,11 +141,6 @@
 
 /* Tab bar — horizontally scrollable so all 7 tabs work on a phone */
 .tab-bar {
-  position: sticky;
-  /* Stick just below the status-bar inset so the pinned tab row stays
-     visible in standalone mode (0 in a normal browser). */
-  top: env(safe-area-inset-top);
-  z-index: 10;
   display: flex;
   flex-wrap: nowrap;
   gap: 0.5rem;
@@ -159,25 +159,13 @@
 
 /* Tab buttons use the shared .chip / .chip--on styles (see index.css) */
 
-/* Panel — the only scrolling region. Fills the space below the pinned
-   header/tab bar; tall tabs scroll here while the chrome above stays put.
-   (Schedule fills it exactly and scrolls its own match list instead.) */
+/* Panel — the active tab's content, in normal flow below the pinned chrome.
+   The window scrolls; this just lays out and pads. The bottom padding clears
+   the iOS home-indicator inset so the last item isn't tucked under it. */
 .tab-panel {
-  flex: 1;
-  min-height: 0;
   display: flex;
   flex-direction: column;
-  overflow-y: auto;
-  padding: 1.25rem 1rem 2rem;
-}
-
-/* Schedule scrolls its own match list, so the panel itself doesn't scroll —
-   drop the fixed bottom padding entirely (it would otherwise show as a dead
-   strip below the list, including the iOS home-indicator inset) and let the
-   list run all the way to the bottom edge. The inset is reserved inside the
-   scrolling list instead (see .match-list), so it's not a fixed bar. */
-.tab-panel--schedule {
-  padding-bottom: 0;
+  padding: 1.25rem 1rem calc(2rem + env(safe-area-inset-bottom));
 }
 
 .panel-title {
