@@ -1,10 +1,11 @@
 .app {
   max-width: 900px;
   margin: 0 auto;
-  /* Exactly one viewport tall and clipped, so the header + tab bar stay
-     pinned and only the active tab's content scrolls (see .tab-panel). */
-  height: 100vh;
-  height: 100dvh;
+  /* Fill the full-height chain (html/body/#root are 100%) and clip, so the
+     header + tab bar stay pinned and only the active tab's content scrolls
+     (see .tab-panel). Using % avoids the iOS-standalone 100dvh short-fall
+     that left a black strip at the bottom. */
+  height: 100%;
   overflow: hidden;
   display: flex;
   flex-direction: column;

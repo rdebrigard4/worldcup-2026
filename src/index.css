@@ -56,16 +56,22 @@ html,
 body {
   margin: 0;
   padding: 0;
+  /* Full-height chain (html → body → #root → .app) measured off the real
+     viewport. Using % rather than vh/dvh avoids the iOS standalone bug where
+     100dvh comes up short and leaves a black strip below the app. */
+  height: 100%;
+  background: var(--bg);
+}
+
+#root {
+  height: 100%;
 }
 
 body {
-  background: var(--bg);
   color: var(--text);
   /* The app owns its own height and manages scrolling internally (the top
      chrome stays put while content scrolls), so the window itself never
-     scrolls. dvh tracks the real viewport as mobile toolbars show/hide. */
-  height: 100vh;
-  height: 100dvh;
+     scrolls. */
   overflow: hidden;
   -webkit-font-smoothing: antialiased;
 }
