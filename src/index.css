@@ -61,7 +61,12 @@ body {
 body {
   background: var(--bg);
   color: var(--text);
-  min-height: 100vh;
+  /* The app owns its own height and manages scrolling internally (the top
+     chrome stays put while content scrolls), so the window itself never
+     scrolls. dvh tracks the real viewport as mobile toolbars show/hide. */
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
   -webkit-font-smoothing: antialiased;
 }
 
