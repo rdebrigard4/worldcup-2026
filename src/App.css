@@ -1,11 +1,13 @@
 .app {
+  /* Pin to the full visual viewport with position:fixed + inset:0. With
+     viewport-fit=cover this sizes edge-to-edge — INCLUDING under the home
+     indicator — so the iOS standalone install no longer shows the web view's
+     black backdrop at the bottom (which %/vh/dvh heights all left exposed).
+     inset:0 + max-width + margin:auto still centers the column on wide screens. */
+  position: fixed;
+  inset: 0;
   max-width: 900px;
   margin: 0 auto;
-  /* Fill the full-height chain (html/body/#root are 100%) and clip, so the
-     header + tab bar stay pinned and only the active tab's content scrolls
-     (see .tab-panel). Using % avoids the iOS-standalone 100dvh short-fall
-     that left a black strip at the bottom. */
-  height: 100%;
   overflow: hidden;
   display: flex;
   flex-direction: column;
