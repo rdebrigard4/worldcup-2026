@@ -96,12 +96,9 @@
   background: var(--surface-2);
 }
 
-/* On open we auto-scroll to the nearest current/upcoming match; this offset
-   (pinned chrome + filter bar + the sticky date header + a little breathing
-   room) keeps the anchored match clear of everything pinned above it. */
-.match--upcoming-anchor {
-  scroll-margin-top: calc(var(--chrome-h, 0px) + var(--filters-h, 0px) + 2.4rem);
-}
+/* On open we auto-scroll to the nearest current/upcoming match. The scroll
+   position is computed in Schedule.tsx (it lands the match flush below its
+   pinned date header), so no scroll-margin is needed here. */
 
 .m-when {
   flex: 0 0 auto;

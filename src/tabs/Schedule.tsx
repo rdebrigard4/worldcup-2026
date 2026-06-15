@@ -50,11 +50,22 @@ export default function Schedule() {
   useEffect(() => {
     if (didScroll.current || !targetRef.current) return
     didScroll.current = true
-    // Defer to the next frame so the --chrome-h / --filters-h offsets (set in
-    // sibling/parent effects, which can run after this one) are applied before
-    // scrollIntoView reads the anchor's scroll-margin-top.
     const el = targetRef.current
-    const id = requestAnimationFrame(() => el.scrollIntoView({ block: 'start' }))
+    // Defer to the next frame so the --chrome-h / --filters-h offsets (set in
+    // sibling/parent effects, which can run after this one) are applied first.
+    const id = requestAnimationFrame(() => {
+      // Land the target flush *below* its own date header, which pins just under
+      // the chrome + filter bar. Offsetting by the full header height keeps the
+      // PREVIOUS day's last game fully scrolled behind the pinned chrome — a
+      // fixed scroll-margin guess overshot and left it peeking through the gap.
+      const cs = getComputedStyle(document.documentElement)
+      const num = (v: string) => parseFloat(cs.getPropertyValue(v)) || 0
+      const offset = num('--chrome-h') + num('--filters-h')
+      const hdr = el.parentElement?.querySelector('.group-hdr')
+      const hdrH = hdr ? hdr.getBoundingClientRect().height : 0
+      const top = window.scrollY + el.getBoundingClientRect().top - offset - hdrH
+      window.scrollTo({ top: Math.max(0, top) })
+    })
     return () => cancelAnimationFrame(id)
   }, [])
 
