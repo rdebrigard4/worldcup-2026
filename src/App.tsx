@@ -156,7 +156,7 @@ export default function App() {
         ))}
       </nav>
 
-      <main className="tab-panel">
+      <main className={`tab-panel tab-panel--${active}`}>
         {/* Keyed by the active tab so a crash is contained to that tab and
             switching tabs resets the boundary. The tab bar above stays alive. */}
         <ErrorBoundary key={active}>

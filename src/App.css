@@ -168,6 +168,14 @@
   padding: 1.25rem 1rem 2rem;
 }
 
+/* Schedule scrolls its own match list, so the panel itself doesn't scroll —
+   drop the fixed bottom padding (it would otherwise show as a dead strip
+   below the list) and let the list run to the bottom edge, reserving only
+   the iOS home-indicator inset (0 in a normal browser). */
+.tab-panel--schedule {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
 .panel-title {
   margin: 0 0 0.25rem;
   font-size: 1.25rem;
