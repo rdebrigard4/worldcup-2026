@@ -10,36 +10,6 @@
   color: var(--text-muted);
 }
 
-/* Sub-view tabs */
-.bracket-tabs {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.4rem;
-  margin-bottom: 1.25rem;
-}
-
-.bracket-tab {
-  padding: 0.4rem 0.85rem;
-  font-size: 0.78rem;
-  font-weight: 600;
-  border-radius: 999px;
-  border: 1px solid var(--border);
-  background: transparent;
-  color: var(--text-muted);
-  white-space: nowrap;
-  transition: all 0.12s ease;
-}
-
-.bracket-tab:hover {
-  color: var(--text);
-}
-
-.bracket-tab--on {
-  background: var(--surface-2);
-  color: var(--text);
-  border-color: var(--accent);
-}
-
 /* Scrollable bracket canvas */
 .bracket-outer {
   overflow-x: auto;
@@ -51,6 +21,47 @@
   display: flex;
   gap: 0.5rem;
   min-width: 700px;
+}
+
+/* Full mirrored bracket: 9 columns (4 left · Final · 4 right) */
+.bracket-canvas--full {
+  min-width: 1480px;
+  align-items: stretch;
+}
+
+/* Mirror the right half so it reads toward the center Final */
+.brd-round--right .brd-card {
+  text-align: right;
+}
+
+.brd-round--right .brd-card-top {
+  flex-direction: row-reverse;
+}
+
+.brd-round--right .brd-card-feeds {
+  align-items: flex-end;
+}
+
+/* Center Final column */
+.brd-round--final-col {
+  min-width: 172px;
+  justify-content: center;
+}
+
+.brd-slots--center {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.6rem;
+  padding: 4px;
+}
+
+.brd-final-cap {
+  font-size: 0.6rem;
+  line-height: 1.4;
+  text-align: center;
+  color: rgba(251, 191, 36, 0.7);
 }
 
 .brd-round {
@@ -204,48 +215,3 @@
   color: rgba(251, 191, 36, 0.6);
 }
 
-/* Final view */
-.bracket-final-view {
-  max-width: 520px;
-  margin: 0 auto;
-}
-
-.bracket-final-hdr {
-  font-size: 0.66rem;
-  font-weight: 700;
-  letter-spacing: 0.07em;
-  text-transform: uppercase;
-  color: var(--text-muted);
-  text-align: center;
-  padding-bottom: 0.6rem;
-  border-bottom: 1px solid var(--border);
-  margin-bottom: 1rem;
-}
-
-.bracket-final-sfs {
-  display: flex;
-  gap: 0.75rem;
-  margin-bottom: 1rem;
-}
-
-.bracket-final-sf {
-  flex: 1;
-}
-
-.bracket-final-arrow {
-  text-align: center;
-  font-size: 0.74rem;
-  color: var(--text-muted);
-  margin-bottom: 0.75rem;
-}
-
-.bracket-final-note {
-  margin-top: 0.75rem;
-  padding: 0.6rem 0.85rem;
-  background: rgba(251, 191, 36, 0.07);
-  border: 1px solid rgba(251, 191, 36, 0.2);
-  border-radius: 10px;
-  font-size: 0.74rem;
-  color: rgba(251, 191, 36, 0.85);
-  text-align: center;
-}
