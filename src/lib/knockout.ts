@@ -13,25 +13,27 @@ import type { ScoreInfo } from './scores'
 //
 // Structure (BRACKET_FEEDS / MATCH_NO) is the official 2026 bracket, verified
 // against BOTH ESPN's live R16/QF linkage and FIFA match numbers 73–104.
-// R32 ids run in kickoff order, so MATCH_NO[r32x] = 73 + index.
+// NOTE: FIFA match numbers are NOT in kickoff order, and ESPN's
+// "Round of 32 N Winner" labels use the FIFA number (N = match# − 72), not the
+// kickoff order — getting this wrong scrambles the R16 pairings.
 
 /** Each knockout match → the two earlier match ids whose winners contest it,
  *  in ESPN home/away order. */
 export const BRACKET_FEEDS: Record<string, [string, string]> = {
-  // Round of 16
-  r16a: ['r32a', 'r32c'], // M90
-  r16b: ['r32b', 'r32e'], // M89
-  r16c: ['r32d', 'r32f'], // M91
-  r16d: ['r32g', 'r32h'], // M92
-  r16e: ['r32k', 'r32l'], // M93
-  r16f: ['r32i', 'r32j'], // M94
-  r16g: ['r32n', 'r32p'], // M95
-  r16h: ['r32m', 'r32o'], // M96
+  // Round of 16 (M## in ESPN/FIFA order = "Winner Mx vs Winner My")
+  r16a: ['r32a', 'r32d'], // M90 = W73 vs W75
+  r16b: ['r32c', 'r32f'], // M89 = W74 vs W77  (Germany game vs France game)
+  r16c: ['r32b', 'r32e'], // M91 = W76 vs W78
+  r16d: ['r32g', 'r32h'], // M92 = W79 vs W80
+  r16e: ['r32l', 'r32k'], // M93 = W83 vs W84
+  r16f: ['r32j', 'r32i'], // M94 = W81 vs W82
+  r16g: ['r32o', 'r32n'], // M95 = W86 vs W88
+  r16h: ['r32m', 'r32p'], // M96 = W85 vs W87
   // Quarterfinals
-  qf1: ['r16a', 'r16b'], // M97
-  qf2: ['r16e', 'r16f'], // M98
-  qf3: ['r16c', 'r16d'], // M99
-  qf4: ['r16g', 'r16h'], // M100
+  qf1: ['r16b', 'r16a'], // M97 = W89 vs W90
+  qf2: ['r16e', 'r16f'], // M98 = W93 vs W94
+  qf3: ['r16c', 'r16d'], // M99 = W91 vs W92
+  qf4: ['r16g', 'r16h'], // M100 = W95 vs W96
   // Semifinals
   sf1: ['qf1', 'qf2'], // M101
   sf2: ['qf3', 'qf4'], // M102
@@ -42,8 +44,8 @@ export const BRACKET_FEEDS: Record<string, [string, string]> = {
 
 /** Official FIFA match number, for compact "Winner M89" references. */
 export const MATCH_NO: Record<string, number> = {
-  r32a: 73, r32b: 74, r32c: 75, r32d: 76, r32e: 77, r32f: 78, r32g: 79, r32h: 80,
-  r32i: 81, r32j: 82, r32k: 83, r32l: 84, r32m: 85, r32n: 86, r32o: 87, r32p: 88,
+  r32a: 73, r32b: 76, r32c: 74, r32d: 75, r32e: 78, r32f: 77, r32g: 79, r32h: 80,
+  r32i: 82, r32j: 81, r32k: 84, r32l: 83, r32m: 85, r32n: 88, r32o: 86, r32p: 87,
   r16a: 90, r16b: 89, r16c: 91, r16d: 92, r16e: 93, r16f: 94, r16g: 95, r16h: 96,
   qf1: 97, qf2: 98, qf3: 99, qf4: 100, sf1: 101, sf2: 102, tp1: 103, fin: 104,
 }

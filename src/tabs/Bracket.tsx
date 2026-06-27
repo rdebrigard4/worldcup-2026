@@ -13,13 +13,13 @@ type Round = { label: string; short: string; sub: string; phase: string; ids: st
 // ESPN's live linkage + official FIFA numbers). The full bracket renders the
 // left half flowing right → Final → the right half flowing left (mirrored).
 const LEFT: Round[] = [
-  { label: 'Round of 32', short: 'R32', sub: 'Jun 28 – Jul 2', phase: 'r32', ids: ['r32a', 'r32c', 'r32b', 'r32e', 'r32k', 'r32l', 'r32i', 'r32j'] },
+  { label: 'Round of 32', short: 'R32', sub: 'Jun 28 – Jul 2', phase: 'r32', ids: ['r32a', 'r32d', 'r32c', 'r32f', 'r32l', 'r32k', 'r32j', 'r32i'] },
   { label: 'Round of 16', short: 'R16', sub: 'Jul 4 – 6', phase: 'r16', ids: ['r16a', 'r16b', 'r16e', 'r16f'] },
   { label: 'Quarterfinals', short: 'QF', sub: 'Jul 9 – 10', phase: 'qf', ids: ['qf1', 'qf2'] },
   { label: 'Semifinal 1', short: 'SF', sub: 'Jul 14', phase: 'sf', ids: ['sf1'] },
 ]
 const RIGHT: Round[] = [
-  { label: 'Round of 32', short: 'R32', sub: 'Jun 30 – Jul 4', phase: 'r32', ids: ['r32d', 'r32f', 'r32g', 'r32h', 'r32n', 'r32p', 'r32m', 'r32o'] },
+  { label: 'Round of 32', short: 'R32', sub: 'Jun 29 – Jul 3', phase: 'r32', ids: ['r32b', 'r32e', 'r32g', 'r32h', 'r32o', 'r32n', 'r32m', 'r32p'] },
   { label: 'Round of 16', short: 'R16', sub: 'Jul 5 – 7', phase: 'r16', ids: ['r16c', 'r16d', 'r16g', 'r16h'] },
   { label: 'Quarterfinals', short: 'QF', sub: 'Jul 11', phase: 'qf', ids: ['qf3', 'qf4'] },
   { label: 'Semifinal 2', short: 'SF', sub: 'Jul 15', phase: 'sf', ids: ['sf2'] },
@@ -30,6 +30,12 @@ function matchById(phase: string, id: string): Match | undefined {
 }
 
 const sideLabel = (s: Side): string => (isTeamSide(s) ? s.team : s.label)
+
+/** Host city from a knockout venue string ("Stadium · City"). */
+const cityOf = (v: string): string => {
+  const parts = v.split(' · ')
+  return parts.length > 1 ? parts[parts.length - 1] : ''
+}
 
 type Slots = Record<string, string>
 type KoTeams = Record<string, [string, string]>
@@ -69,7 +75,7 @@ function BracketCard({
   saved: boolean
   onToggle: () => void
 }) {
-  const meta = [fmtKickoffDate(m.k) || m.date, fmtKickoffTime(m.k, false)].filter(Boolean).join(' · ')
+  const meta = [cityOf(m.v), fmtKickoffDate(m.k) || m.date, fmtKickoffTime(m.k, false)].filter(Boolean).join(' · ')
   const [s0, s1] = matchSides(m, slots, koTeams)
   const showScore = !!score && score.state !== 'pre'
   return (
