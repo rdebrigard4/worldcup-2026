@@ -118,21 +118,20 @@ export function winnerOf(
 
 /** How one side of a knockout card should display. `id` is the source match. */
 export type Feeder =
-  | { kind: 'team'; team: string; id: string } // winner decided
-  | { kind: 'matchup'; text: string; id: string } // an R32 pairing (resolved or placeholder)
-  | { kind: 'ref'; text: string; id: string } // deeper, undecided → "Winner M89"
+  | { kind: 'team'; team: string; id: string } // winner decided → show the team
+  | { kind: 'ref'; text: string; id: string } // not yet decided → "Winner M89"
 
 function feederFor(
   id: string,
   slots: Record<string, string>,
   scores: Record<string, ScoreInfo>,
 ): Feeder {
+  // Only show a real team once its feeding match is actually decided. Until
+  // then the bracket's column layout conveys the path — we don't name teams
+  // that haven't advanced yet.
   const win = winnerOf(id, slots, scores)
   if (win) return { kind: 'team', team: win, id }
-  if (BRACKET_FEEDS[id]) return { kind: 'ref', text: `Winner M${MATCH_NO[id] ?? '?'}`, id }
-  // R32 feeder: show its (possibly still-placeholder) pairing.
-  const m = findMatchById(id)?.m
-  return { kind: 'matchup', text: m ? resolveMatchTeams(m, slots) : id, id }
+  return { kind: 'ref', text: `Winner M${MATCH_NO[id] ?? '?'}`, id }
 }
 
 /** The two feeders contesting a knockout match (R16 and later), for display.

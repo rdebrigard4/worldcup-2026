@@ -54,14 +54,6 @@ function FeederRow({ f }: { f: Feeder }) {
       </span>
     )
   }
-  if (f.kind === 'matchup') {
-    // Show the feeding pairing with its live/finished score.
-    return (
-      <span className="brd-feed">
-        <MatchTeams t={f.text} matchId={f.id} />
-      </span>
-    )
-  }
   return <span className="brd-feed brd-feed--ref">{f.text}</span>
 }
 
