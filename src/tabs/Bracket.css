@@ -125,7 +125,7 @@
 .bracket-canvas--compact {
   min-width: 0;
   width: 100%;
-  gap: 3px;
+  gap: 1px;
 }
 
 .bracket-canvas--compact .brd-round {
@@ -153,10 +153,10 @@
   flex-direction: column;
   align-items: stretch;
   justify-content: center;
-  gap: 5px;
+  gap: 4px;
   width: 100%;
-  min-height: 56px;
-  padding: 5px 1px;
+  min-height: 46px;
+  padding: 5px 0;
   border: 1px solid var(--border);
   border-radius: 6px;
   background: var(--surface);
@@ -175,22 +175,24 @@
 
 .brm-team {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
   justify-content: center;
-  gap: 0;
+  gap: 2px;
   min-width: 0;
-  line-height: 1.05;
+  line-height: 1.1;
 }
 
 .brm-team .mt-flag {
-  font-size: 0.82rem;
+  font-size: 0.66rem;
+  flex-shrink: 0;
 }
 
 .brm-code {
-  font-size: 0.52rem;
+  font-size: 0.48rem;
   font-weight: 700;
-  letter-spacing: 0.01em;
+  letter-spacing: 0;
+  white-space: nowrap;
   color: var(--text);
 }
 
