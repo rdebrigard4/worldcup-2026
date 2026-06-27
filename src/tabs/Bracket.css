@@ -10,6 +10,33 @@
   color: var(--text-muted);
 }
 
+/* Detailed / Compact toggle */
+.bracket-view-toggle {
+  display: inline-flex;
+  gap: 2px;
+  margin-bottom: 1rem;
+  padding: 2px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface);
+}
+
+.bvt-btn {
+  padding: 0.32rem 0.85rem;
+  font-size: 0.74rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--text-muted);
+  transition: all 0.12s ease;
+}
+
+.bvt-btn--on {
+  background: var(--accent);
+  color: var(--on-accent, #04210f);
+}
+
 /* Scrollable bracket canvas */
 .bracket-outer {
   overflow-x: auto;
@@ -62,6 +89,73 @@
   line-height: 1.4;
   text-align: center;
   color: rgba(251, 191, 36, 0.7);
+}
+
+/* ── Compact (flags-only) bracket: fits the whole tree on screen ── */
+.bracket-outer--compact {
+  overflow-x: hidden;
+}
+
+.bracket-canvas--compact {
+  min-width: 0;
+  width: 100%;
+  gap: 3px;
+}
+
+.bracket-canvas--compact .brd-round {
+  min-width: 0;
+}
+
+.bracket-canvas--compact .brd-round--final-col {
+  min-width: 0;
+}
+
+.bracket-canvas--compact .brd-round-hdr {
+  font-size: 0.5rem;
+  letter-spacing: 0.04em;
+  padding: 0 1px 0.3rem;
+  margin-bottom: 0.35rem;
+}
+
+.bracket-canvas--compact .brd-slots {
+  padding: 1px;
+  gap: 3px;
+}
+
+.brm-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1px;
+  width: 100%;
+  min-height: 34px;
+  padding: 3px 1px;
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  background: var(--surface);
+  transition: all 0.12s ease;
+}
+
+.brm-card--saved {
+  border-color: var(--accent);
+  background: var(--surface-2);
+}
+
+.brm-card--final {
+  border-color: rgba(251, 191, 36, 0.5);
+  background: rgba(251, 191, 36, 0.08);
+}
+
+.brm-flag {
+  font-size: 0.95rem;
+  line-height: 1.05;
+}
+
+.brm-tbd {
+  font-size: 0.8rem;
+  line-height: 1.05;
+  color: var(--text-muted);
 }
 
 .brd-round {
