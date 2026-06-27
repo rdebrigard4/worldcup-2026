@@ -38,6 +38,10 @@ export type ScoreInfo = {
   clock?: string
   /** Short status label, e.g. "FT", "HT", "67'". */
   detail?: string
+  /** Which side advanced (knockout), aligned to the app's "A vs B" order.
+   *  Set from ESPN's per-competitor winner flag, so penalty-shootout results
+   *  resolve correctly even when regulation goals are level. */
+  winner?: 'home' | 'away'
 }
 
 // ESPN team displayName → the team string this app uses (flags.ts / schedule.ts).
@@ -117,7 +121,8 @@ function merge(batch: Record<string, ScoreInfo>) {
       prev.away !== info.away ||
       prev.state !== info.state ||
       prev.clock !== info.clock ||
-      prev.detail !== info.detail
+      prev.detail !== info.detail ||
+      prev.winner !== info.winner
     ) {
       next[id] = info
       changed = true
@@ -129,7 +134,7 @@ function merge(batch: Record<string, ScoreInfo>) {
   }
 }
 
-type EspnCompetitor = { homeAway?: string; score?: string; team?: { displayName?: string } }
+type EspnCompetitor = { homeAway?: string; score?: string; winner?: boolean; team?: { displayName?: string } }
 type EspnEvent = {
   date?: string
   competitions?: {
@@ -163,12 +168,24 @@ function parseEvents(events: EspnEvent[]): Record<string, ScoreInfo> {
     const appAwayScore = num(homeIsAppHome ? espnAway.score : espnHome.score)
 
     const detail = comp?.status?.type?.shortDetail ?? comp?.status?.type?.detail
+
+    // Which side won, aligned to the app's listing order (handles penalties via
+    // ESPN's winner flag rather than inferring from goals).
+    let winner: 'home' | 'away' | undefined
+    if (state === 'post') {
+      const espnHomeWon = espnHome.winner === true
+      const espnAwayWon = espnAway.winner === true
+      if (espnHomeWon) winner = homeIsAppHome ? 'home' : 'away'
+      else if (espnAwayWon) winner = homeIsAppHome ? 'away' : 'home'
+    }
+
     out[match.id] = {
       home: appHomeScore,
       away: appAwayScore,
       state,
       clock: state === 'in' ? comp?.status?.displayClock || detail : undefined,
       detail,
+      winner,
     }
   }
   return out
