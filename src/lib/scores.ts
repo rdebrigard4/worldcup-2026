@@ -1,5 +1,6 @@
 import { useSyncExternalStore } from 'react'
 import { allMatches } from './matches'
+import { KNOCKOUT } from '../data/schedule'
 
 // Live scores, pulled client-side from ESPN's public scoreboard JSON.
 //
@@ -217,9 +218,75 @@ function clampToday(): string {
   return today
 }
 
+// ── Knockout team assignments (read straight from ESPN) ──
+// ESPN fills knockout fixtures with real teams as groups finish and games are
+// played — including the third-placed teams whose R32 slots follow FIFA's
+// official combination table. We read those directly rather than computing them.
+// Stored as the two app-normalized names in ESPN home/away order (which may be
+// placeholders like "Third Place Group A/B/C/D/F" until locked in).
+
+const KO_START = '20260628'
+const KO_POLL_MS = 300_000 // assignments change slowly (per game), so poll gently
+
+// kickoff(ms) → app knockout match id
+let koIndex: Map<number, string> | null = null
+function getKoIndex(): Map<number, string> {
+  if (koIndex) return koIndex
+  const idx = new Map<number, string>()
+  for (const k of KNOCKOUT) for (const m of k.matches) idx.set(+new Date(m.k), m.id)
+  koIndex = idx
+  return idx
+}
+
+let koTeams: Record<string, [string, string]> = {}
+const koListeners = new Set<() => void>()
+const koEmit = () => koListeners.forEach((l) => l())
+
+function parseKoTeams(events: EspnEvent[]): Record<string, [string, string]> {
+  const out: Record<string, [string, string]> = {}
+  for (const ev of events) {
+    const appId = getKoIndex().get(+new Date(ev.date ?? ''))
+    if (!appId) continue
+    const cs = ev.competitions?.[0]?.competitors ?? []
+    if (cs.length !== 2) continue
+    const home = cs.find((c) => c.homeAway === 'home') ?? cs[0]
+    const away = cs.find((c) => c.homeAway === 'away') ?? cs[1]
+    out[appId] = [toAppName(home.team?.displayName ?? ''), toAppName(away.team?.displayName ?? '')]
+  }
+  return out
+}
+
+function mergeKo(batch: Record<string, [string, string]>) {
+  let changed = false
+  const next = { ...koTeams }
+  for (const [id, pair] of Object.entries(batch)) {
+    const prev = next[id]
+    if (!prev || prev[0] !== pair[0] || prev[1] !== pair[1]) {
+      next[id] = pair
+      changed = true
+    }
+  }
+  if (changed) {
+    koTeams = next
+    koEmit()
+  }
+}
+
+async function fetchKoTeams(): Promise<void> {
+  try {
+    const res = await fetch(`${BASE}?dates=${KO_START}-${TOURNAMENT_END}`)
+    if (!res.ok) return
+    const data = (await res.json()) as { events?: EspnEvent[] }
+    mergeKo(parseKoTeams(data.events ?? []))
+  } catch {
+    // Network error → keep current assignments; bracket falls back to placeholders.
+  }
+}
+
 // ── Polling lifecycle (browser only) ──
 let started = false
 let timer: ReturnType<typeof setInterval> | null = null
+let koTimer: ReturnType<typeof setInterval> | null = null
 
 function poll() {
   if (typeof document !== 'undefined' && document.hidden) return
@@ -233,8 +300,16 @@ function start() {
   void fetchDates(`${TOURNAMENT_START}-${clampToday()}`)
   // …then poll only today's slate and merge.
   timer = setInterval(poll, POLL_MS)
+  // Knockout team assignments: fetch once now, then poll gently.
+  void fetchKoTeams()
+  koTimer = setInterval(() => {
+    if (typeof document === 'undefined' || !document.hidden) void fetchKoTeams()
+  }, KO_POLL_MS)
   document.addEventListener('visibilitychange', () => {
-    if (!document.hidden) poll() // refresh immediately when the tab returns
+    if (!document.hidden) {
+      poll() // refresh immediately when the tab returns
+      void fetchKoTeams()
+    }
   })
 }
 
@@ -260,13 +335,31 @@ export function useScore(matchId: string): ScoreInfo | undefined {
   return useScores()[matchId]
 }
 
+const koSubscribe = (l: () => void) => {
+  start()
+  koListeners.add(l)
+  return () => {
+    koListeners.delete(l)
+  }
+}
+const koGetSnapshot = () => koTeams
+const KO_EMPTY: Record<string, [string, string]> = {}
+const koGetServerSnapshot = () => KO_EMPTY
+
+/** ESPN's current knockout team assignments, keyed by app match id, as the two
+ *  app-normalized names in home/away order (may be placeholders until locked). */
+export function useKnockoutTeams(): Record<string, [string, string]> {
+  return useSyncExternalStore(koSubscribe, koGetSnapshot, koGetServerSnapshot)
+}
+
 // Exposed for unit-style verification.
-export const __test = { parseEvents, resolveAppMatch, toAppName }
+export const __test = { parseEvents, resolveAppMatch, toAppName, parseKoTeams }
 
 // Stop the timer on HMR teardown so dev reloads don't stack intervals.
 if (import.meta.hot) {
   import.meta.hot.dispose(() => {
     if (timer) clearInterval(timer)
+    if (koTimer) clearInterval(koTimer)
     started = false
   })
 }
