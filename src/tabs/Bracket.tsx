@@ -4,7 +4,7 @@ import { fmtKickoffDate, fmtKickoffTime } from '../lib/format'
 import { useSavedMatches } from '../lib/storage'
 import { useScores, useKnockoutTeams, type ScoreInfo } from '../lib/scores'
 import { resolveGroupSlots, matchSides, isTeamSide, BRACKET_FEEDS, type Side } from '../lib/knockout'
-import { teamFlag } from '../data/flags'
+import { teamFlag, teamCode } from '../data/flags'
 import './Bracket.css'
 
 type Round = { label: string; short: string; sub: string; phase: string; ids: string[] }
@@ -115,9 +115,14 @@ function MiniCard({
   const [s0, s1] = matchSides(m, slots, koTeams)
   const cell = (s: Side) =>
     isTeamSide(s) ? (
-      <span className="brm-flag">{teamFlag(s.team) || '•'}</span>
+      <span className="brm-team">
+        {teamFlag(s.team) && <span className="mt-flag">{teamFlag(s.team)}</span>}
+        <span className="brm-code">{teamCode(s.team)}</span>
+      </span>
     ) : (
-      <span className="brm-tbd">·</span>
+      <span className="brm-team brm-team--tbd">
+        <span className="brm-code">—</span>
+      </span>
     )
   return (
     <button
@@ -158,20 +163,27 @@ function Column({
 
 /** Orthogonal connector lines between each match and the two it feeds from,
  *  measured from the laid-out cards so it works in both halves + densities. */
-function computePaths(canvas: HTMLElement): string[] {
+function computeConnectors(canvas: HTMLElement): { w: number; h: number; paths: string[] } {
   const out: string[] = []
   const cr = canvas.getBoundingClientRect()
-  // Coords relative to the canvas's scrollable content (robust to offsetParent).
+  let maxR = 0
+  let maxB = 0
+  // Coords relative to the canvas content (robust to offsetParent). Extent is
+  // derived from the cards — NOT canvas.scrollWidth, which would include this
+  // SVG itself and feed back to pin the width.
   const box = (id: string) => {
     const el = canvas.querySelector<HTMLElement>(`[data-mid="${id}"]`)
     if (!el) return null
     const r = el.getBoundingClientRect()
-    return {
+    const b = {
       left: r.left - cr.left + canvas.scrollLeft,
       top: r.top - cr.top + canvas.scrollTop,
       w: r.width,
       h: r.height,
     }
+    maxR = Math.max(maxR, b.left + b.w)
+    maxB = Math.max(maxB, b.top + b.h)
+    return b
   }
   for (const [matchId, feeders] of Object.entries(BRACKET_FEEDS)) {
     if (matchId === 'tp1') continue
@@ -189,7 +201,7 @@ function computePaths(canvas: HTMLElement): string[] {
       out.push(`M${sx},${fcy} H${mx} V${mcy} H${ex}`)
     }
   }
-  return out
+  return { w: maxR, h: maxB, paths: out }
 }
 
 export default function Bracket() {
@@ -222,8 +234,7 @@ export default function Bracket() {
   useLayoutEffect(() => {
     const canvas = canvasRef.current
     if (!canvas) return
-    const recompute = () =>
-      setConn({ w: canvas.scrollWidth, h: canvas.scrollHeight, paths: computePaths(canvas) })
+    const recompute = () => setConn(computeConnectors(canvas))
     recompute()
     const ro = new ResizeObserver(recompute)
     ro.observe(canvas)

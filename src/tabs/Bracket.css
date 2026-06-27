@@ -145,20 +145,20 @@
 
 .bracket-canvas--compact .brd-slots {
   padding: 1px;
-  gap: 3px;
+  gap: 6px;
 }
 
 .brm-card {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: stretch;
   justify-content: center;
-  gap: 1px;
+  gap: 5px;
   width: 100%;
-  min-height: 34px;
-  padding: 3px 1px;
+  min-height: 56px;
+  padding: 5px 1px;
   border: 1px solid var(--border);
-  border-radius: 5px;
+  border-radius: 6px;
   background: var(--surface);
   transition: all 0.12s ease;
 }
@@ -173,15 +173,34 @@
   background: rgba(251, 191, 36, 0.08);
 }
 
-.brm-flag {
-  font-size: 0.95rem;
+.brm-team {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  min-width: 0;
   line-height: 1.05;
 }
 
-.brm-tbd {
-  font-size: 0.8rem;
-  line-height: 1.05;
+.brm-team .mt-flag {
+  font-size: 0.82rem;
+}
+
+.brm-code {
+  font-size: 0.52rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  color: var(--text);
+}
+
+.brm-card--final .brm-code {
+  color: #fbbf24;
+}
+
+.brm-team--tbd .brm-code {
   color: var(--text-muted);
+  font-weight: 500;
 }
 
 .brd-round {

@@ -57,3 +57,62 @@ export const TEAM_FLAGS: Record<string, string> = {
 export function teamFlag(team: string): string {
   return TEAM_FLAGS[team.trim()] ?? ''
 }
+
+// Standard FIFA three-letter codes, for compact displays where full names
+// don't fit. Keys match the fixture team strings exactly.
+export const TEAM_CODES: Record<string, string> = {
+  Mexico: 'MEX',
+  'South Africa': 'RSA',
+  'Korea Republic': 'KOR',
+  Czechia: 'CZE',
+  Canada: 'CAN',
+  'Bosnia-Herzegovina': 'BIH',
+  Qatar: 'QAT',
+  Switzerland: 'SUI',
+  Brazil: 'BRA',
+  Morocco: 'MAR',
+  Haiti: 'HAI',
+  Scotland: 'SCO',
+  USA: 'USA',
+  Paraguay: 'PAR',
+  Australia: 'AUS',
+  Türkiye: 'TUR',
+  Germany: 'GER',
+  Curaçao: 'CUW',
+  "Côte d'Ivoire": 'CIV',
+  Ecuador: 'ECU',
+  Netherlands: 'NED',
+  Japan: 'JPN',
+  Sweden: 'SWE',
+  Tunisia: 'TUN',
+  Belgium: 'BEL',
+  Egypt: 'EGY',
+  Iran: 'IRN',
+  'New Zealand': 'NZL',
+  Spain: 'ESP',
+  'Cabo Verde': 'CPV',
+  'Saudi Arabia': 'KSA',
+  Uruguay: 'URU',
+  France: 'FRA',
+  Senegal: 'SEN',
+  Norway: 'NOR',
+  Iraq: 'IRQ',
+  Argentina: 'ARG',
+  Algeria: 'ALG',
+  Austria: 'AUT',
+  Jordan: 'JOR',
+  Portugal: 'POR',
+  Uzbekistan: 'UZB',
+  Colombia: 'COL',
+  'DR Congo': 'COD',
+  England: 'ENG',
+  Croatia: 'CRO',
+  Ghana: 'GHA',
+  Panama: 'PAN',
+}
+
+/** FIFA three-letter code for a team, or a best-effort fallback. */
+export function teamCode(team: string): string {
+  const t = team.trim()
+  return TEAM_CODES[t] ?? t.slice(0, 3).toUpperCase()
+}
