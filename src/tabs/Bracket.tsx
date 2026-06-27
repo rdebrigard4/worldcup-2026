@@ -2,6 +2,8 @@ import { useMemo, useState } from 'react'
 import { KNOCKOUT, type Match } from '../data/schedule'
 import { fmtKickoffDate, fmtKickoffTime } from '../lib/format'
 import { useSavedMatches } from '../lib/storage'
+import { useScores } from '../lib/scores'
+import { resolveGroupSlots, resolveMatchTeams } from '../lib/knockout'
 import MatchTeams from '../components/MatchTeams'
 import './Bracket.css'
 
@@ -52,6 +54,12 @@ function BracketCard({
 export default function Bracket() {
   const [half, setHalf] = useState<Half>('left')
   const { isSaved, toggle } = useSavedMatches()
+  const scores = useScores()
+
+  // Map "Winner A"/"Runner-up B" → real teams for every decided group, then
+  // build a copy of any match with those slots filled in.
+  const slots = useMemo(() => resolveGroupSlots(scores), [scores])
+  const resolve = (m: Match): Match => ({ ...m, t: resolveMatchTeams(m, slots) })
 
   const r32 = useMemo(() => KNOCKOUT.find((k) => k.phase === 'r32')?.matches ?? [], [])
 
@@ -101,13 +109,13 @@ export default function Bracket() {
           <div className="bracket-final-sfs">
             {sf.map((m) => (
               <div key={m.id} className="bracket-final-sf">
-                <BracketCard m={m} saved={isSaved(m.id)} onToggle={() => toggle(m.id)} />
+                <BracketCard m={resolve(m)} saved={isSaved(m.id)} onToggle={() => toggle(m.id)} />
               </div>
             ))}
           </div>
           <div className="bracket-final-arrow">↓ winners advance ↓</div>
           {final.map((m) => (
-            <BracketCard key={m.id} m={m} isFinal saved={isSaved(m.id)} onToggle={() => toggle(m.id)} />
+            <BracketCard key={m.id} m={resolve(m)} isFinal saved={isSaved(m.id)} onToggle={() => toggle(m.id)} />
           ))}
           <div className="bracket-final-note">
             🏆 World Cup Final · MetLife Stadium · East Rutherford, NJ · Jul 19
@@ -124,7 +132,7 @@ export default function Bracket() {
                 </div>
                 <div className="brd-slots">
                   {round.matches.map((m) => (
-                    <BracketCard key={m.id} m={m} saved={isSaved(m.id)} onToggle={() => toggle(m.id)} />
+                    <BracketCard key={m.id} m={resolve(m)} saved={isSaved(m.id)} onToggle={() => toggle(m.id)} />
                   ))}
                 </div>
               </div>
