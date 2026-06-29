@@ -13,27 +13,25 @@
 /* Detailed / Compact toggle */
 .bracket-view-toggle {
   display: inline-flex;
-  gap: 2px;
+  gap: 0.5rem;
   margin-bottom: 1rem;
-  padding: 2px;
-  border: 1px solid var(--border);
-  border-radius: 999px;
-  background: var(--surface);
 }
 
 .bvt-btn {
-  padding: 0.32rem 0.85rem;
-  font-size: 0.74rem;
+  padding: 0.38rem 1rem;
+  font-size: 0.78rem;
   font-weight: 600;
-  border: none;
+  border: 1.5px solid var(--border);
   border-radius: 999px;
-  background: transparent;
+  background: var(--surface);
   color: var(--text-muted);
+  cursor: pointer;
   transition: all 0.12s ease;
 }
 
 .bvt-btn--on {
   background: var(--accent);
+  border-color: var(--accent);
   color: var(--on-accent, #04210f);
 }
 
