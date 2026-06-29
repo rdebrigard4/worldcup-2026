@@ -43,6 +43,10 @@ export type ScoreInfo = {
    *  Set from ESPN's per-competitor winner flag, so penalty-shootout results
    *  resolve correctly even when regulation goals are level. */
   winner?: 'home' | 'away'
+  /** Knockout matches only: goals keyed by the app-normalized team name.
+   *  Use this instead of home/away so renders can align by team name regardless
+   *  of whether ESPN's home/away order matches the app's display order. */
+  teamScores?: Record<string, number>
 }
 
 // ESPN team displayName → the team string this app uses (flags.ts / schedule.ts).
@@ -123,7 +127,8 @@ function merge(batch: Record<string, ScoreInfo>) {
       prev.state !== info.state ||
       prev.clock !== info.clock ||
       prev.detail !== info.detail ||
-      prev.winner !== info.winner
+      prev.winner !== info.winner ||
+      JSON.stringify(prev.teamScores) !== JSON.stringify(info.teamScores)
     ) {
       next[id] = info
       changed = true
@@ -160,8 +165,18 @@ function parseEvents(events: EspnEvent[]): Record<string, ScoreInfo> {
     if (!homeName || !awayName) continue
 
     const kickoff = +new Date(ev.date ?? '')
-    const match = resolveAppMatch(homeName, awayName, kickoff)
-    if (!match) continue // unknown / unresolved knockout placeholder — skip silently
+    let match = resolveAppMatch(homeName, awayName, kickoff)
+    // KO matches have generic placeholder t-strings so resolveAppMatch can't find
+    // them by team name. Fall back to the kickoff-time index (unique per KO game).
+    let fromKoFallback = false
+    if (!match) {
+      const koId = getKoIndex().get(kickoff)
+      if (koId) {
+        match = { id: koId, home: homeName, away: awayName, kickoff }
+        fromKoFallback = true
+      }
+    }
+    if (!match) continue // truly unknown event — skip silently
 
     // Align ESPN scores to the app's "A vs B" listing order.
     const homeIsAppHome = homeName === match.home
@@ -187,6 +202,12 @@ function parseEvents(events: EspnEvent[]): Record<string, ScoreInfo> {
       clock: state === 'in' ? comp?.status?.displayClock || detail : undefined,
       detail,
       winner,
+      // For KO matches store goals by team name. The display order (from matchSides/
+      // alignTeams) may differ from ESPN's home/away order, so renders use this map
+      // instead of the positional home/away fields.
+      ...(fromKoFallback
+        ? { teamScores: { [homeName]: num(espnHome.score), [awayName]: num(espnAway.score) } }
+        : {}),
     }
   }
   return out

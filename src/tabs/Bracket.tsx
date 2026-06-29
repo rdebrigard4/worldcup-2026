@@ -78,6 +78,11 @@ function BracketCard({
   const meta = [cityOf(m.v), fmtKickoffDate(m.k) || m.date, fmtKickoffTime(m.k, false)].filter(Boolean).join(' · ')
   const [s0, s1] = matchSides(m, slots, koTeams)
   const showScore = !!score && score.state !== 'pre'
+  const goalsFor = (s: Side): number | undefined => {
+    if (!showScore) return undefined
+    if (score!.teamScores && isTeamSide(s)) return score!.teamScores[s.team]
+    return s === s0 ? score!.home : score!.away
+  }
   return (
     <button
       className={`brd-card${saved ? ' brd-card--saved' : ''}${isFinal ? ' brd-card--final' : ''}`}
@@ -86,8 +91,8 @@ function BracketCard({
       aria-pressed={saved}
     >
       <span className="brd-rows">
-        <TeamLine s={s0} goals={showScore ? score!.home : undefined} />
-        <TeamLine s={s1} goals={showScore ? score!.away : undefined} />
+        <TeamLine s={s0} goals={goalsFor(s0)} />
+        <TeamLine s={s1} goals={goalsFor(s1)} />
       </span>
       <span className="brd-card-meta">
         <span>{meta}</span>

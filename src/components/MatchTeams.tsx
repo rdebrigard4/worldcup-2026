@@ -13,6 +13,12 @@ export default function MatchTeams({ t, matchId }: { t: string; matchId?: string
   const score = matchId ? scores[matchId] : undefined
   const showScore = !!score && sides.length === 2
 
+  // For KO matches, scores are keyed by team name to avoid alignment issues when
+  // ESPN's home/away order differs from the app's display order (matchSides).
+  // Fall back to positional home/away for group stage matches.
+  const goalsHome = score?.teamScores ? (score.teamScores[sides[0]] ?? 0) : (score?.home ?? 0)
+  const goalsAway = score?.teamScores ? (score.teamScores[sides[1]] ?? 0) : (score?.away ?? 0)
+
   return (
     <>
       {sides.map((side, i) => {
@@ -22,7 +28,7 @@ export default function MatchTeams({ t, matchId }: { t: string; matchId?: string
             {i > 0 &&
               (showScore ? (
                 <span className="mt-score">
-                  {score!.home}<span className="mt-dash">–</span>{score!.away}
+                  {goalsHome}<span className="mt-dash">–</span>{goalsAway}
                 </span>
               ) : (
                 <span className="mt-vs"> vs </span>
